@@ -1,0 +1,35 @@
+# 全局状态 · 唯一可信来源
+# 只有 WorkBuddy 可写。CodeBuddy 只读。
+# 每个需求一个条目，字段含义见 CONTRACT.md
+
+project: 待定
+contract_version: v1.1
+updated_at: 2026-11-06T11:52:00+08:00
+
+# 当前阶段：inbox | spec | design | tasks | dev | accept | done
+stage: inbox
+
+# 协作通道状态
+handshake:
+  contract_ack: passed
+  acknowledged_at: 2026-11-06T11:52:00+08:00
+  channel: shared_filesystem      # 共享文件总线；Git 通道待启用
+  caveat: 复述准确不等于执行合规，须由首单实测验证
+
+requirements: []
+# 示例条目（取消注释即用）：
+# - id: R001
+#   title: 示例需求
+#   stage: spec
+#   gates:
+#     G1_analysis_review: pending    # 人类审核需求分析
+#     G2_build_permit: pending       # 人类放行进入开发
+#     G3_acceptance: pending         # 人类验收
+#   open_questions: []
+#   assumptions_awaiting_confirm: []
+
+# 待人类裁决项（CodeBuddy 与 WorkBuddy 都不得自行决定）
+pending_decisions: []
+
+# 阻塞中的任务
+blockers: []
