@@ -2,34 +2,56 @@
 # 只有 WorkBuddy 可写。CodeBuddy 只读。
 # 每个需求一个条目，字段含义见 CONTRACT.md
 
-project: 待定
+project: 数据开发与问题处理协作
 contract_version: v1.1
-updated_at: 2026-11-06T11:52:00+08:00
+updated_at: 2026-11-08T12:45:00+08:00
 
 # 当前阶段：inbox | spec | design | tasks | dev | accept | done
-stage: inbox
+stage: spec
 
 # 协作通道状态
 handshake:
   contract_ack: passed
   acknowledged_at: 2026-11-06T11:52:00+08:00
-  channel: shared_filesystem      # 共享文件总线；Git 通道待启用
+  channel: shared_filesystem + git   # Git 通道已启用（github.com/xkf-wyf/collaboration）
   caveat: 复述准确不等于执行合规，须由首单实测验证
 
-requirements: []
-# 示例条目（取消注释即用）：
-# - id: R001
-#   title: 示例需求
-#   stage: spec
-#   gates:
-#     G1_analysis_review: pending    # 人类审核需求分析
-#     G2_build_permit: pending       # 人类放行进入开发
-#     G3_acceptance: pending         # 人类验收
-#   open_questions: []
-#   assumptions_awaiting_confirm: []
+requirements:
+  - id: R001
+    title: CPT 月结数据排查工具
+    stage: spec                     # 规格 v0.3 已出，等待 G1 人类审核
+    spec: 01-spec/R001-spec.md
+    analysis: 01-spec/R001-范围澄清.md
+    inbox: 00-inbox/001-原始需求.md
+    knowledge_base:
+      - kb/interfaces.md
+      - kb/tables.md
+      - kb/rules.md
+      - kb/README.md
+    kb_snapshot: 2026-11-08         # 本地快照日期；云端 CPT月结 项目为权威源
+    gates:
+      G1_analysis_review: pending   # 人类审核 v0.3 规格（裁决 D1~D4）
+      G2_build_permit: blocked      # 待 G1 通过
+      G3_acceptance: pending
+    open_questions:
+      - D1 P0 五项（F1~F5）是否确认
+      - D2 假设 A1~A4 是否 confirm
+      - D3 “gap 大”量化阈值（无则 P0 沿用人工判断）
+      - D4 kb/ 更新责任确认（云端为准，人类更新）
+    assumptions_awaiting_confirm: [A1, A2, A3, A4]
+    decisions:
+      - date: 2026-11-06
+        by: 人类审核方
+        decision: 工具不连接 Databricks，SQL 由使用者自行执行
+        impact: 删除认证层与自动归因，形态改为“SQL 生成 + 判读规则”，零依赖
+      - date: 2026-11-08
+        by: 人类审核方
+        decision: 知识库以云端 CPT月结 项目为准，人类负责更新；当前先用本地快照
+        impact: kb/ 建立并标注快照日期；工具只读 kb/，不解析原始 docx/xlsx
 
 # 待人类裁决项（CodeBuddy 与 WorkBuddy 都不得自行决定）
-pending_decisions: []
+pending_decisions:
+  - R001 D1~D4 待裁决（见 01-spec/R001-spec.md 第十节），G1 未签字不得进入任务拆分与开发
 
 # 阻塞中的任务
 blockers: []
