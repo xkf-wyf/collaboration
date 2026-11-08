@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="utf-8"><title>协作看板 · CPT 月结数据排查工具</title></head>
+<body style="margin:0;background:#F1EFE8;font-family:'Segoe UI','Microsoft YaHei',sans-serif;color:#2C2C2A">
+<div style="max-width:1080px;margin:0 auto;padding:24px 20px">
+  <h1 style="font-size:18px;margin:0 0 4px">协作看板 · CPT 月结数据排查工具</h1>
+  <p style="margin:0 0 16px;color:#888780;font-size:12px">
+    生成时间 2026-11-08 13:29 ·
+    状态阶段 <b>spec</b> ·
+    状态更新于 2026-11-08T12:45:00+08:00 ·
+    kb 快照 2026-11-08 ·
+    再生成：<code>python dashboard.py</code></p>
+
+  <div style="display:flex;gap:10px;margin-bottom:16px"><div style="flex:1;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">G1 规格审核</span><span style="background:#FAEEDA;color:#854F0B;padding:2px 10px;border-radius:10px;font-size:12px">pending</span></div><div style="flex:1;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">G2 开发放行</span><span style="background:#FCEBEB;color:#A32D2D;padding:2px 10px;border-radius:10px;font-size:12px">blocked</span></div><div style="flex:1;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px">G3 验收</span><span style="background:#FAEEDA;color:#854F0B;padding:2px 10px;border-radius:10px;font-size:12px">pending</span></div></div>
+
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <div style="flex:1;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px 16px">
+      <h3 style="font-size:14px;margin:0 0 8px;color:#A32D2D">待你裁决（阻塞项）</h3>
+      <ul style="padding-left:16px;margin:0;font-size:13px"><li style="margin:4px 0">R001 D1~D4 待裁决（见 01-spec/R001-spec.md 第十节），G1 未签字不得进入任务拆分与开发</li></ul>
+    </div>
+    <div style="flex:1;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px 16px">
+      <h3 style="font-size:14px;margin:0 0 8px;color:#185FA5">开放问题</h3>
+      <ul style="padding-left:16px;margin:0;font-size:13px"><li style="margin:4px 0">D1 P0 五项（F1~F5）是否确认</li><li style="margin:4px 0">D2 假设 A1~A4 是否 confirm</li><li style="margin:4px 0">D3 “gap 大”量化阈值（无则 P0 沿用人工判断）</li><li style="margin:4px 0">D4 kb/ 更新责任确认（云端为准，人类更新）</li></ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;margin:18px 0 8px">CodeBuddy 执行回报</h3><p style="color:#888780;font-size:13px">暂无回报——CodeBuddy 尚未执行首单（当前仅完成契约握手）。回报将出现在 03-tasks/ 各任务单末尾。</p>
+
+  <h3 style="font-size:14px;margin:18px 0 8px">人类裁决记录</h3>
+  <table style="border-collapse:collapse;width:100%;font-size:12px"><tr><th style="text-align:left;padding:6px 8px;border-bottom:0.5px solid #d3d1c7">日期</th><th style="text-align:left;padding:6px 8px;border-bottom:0.5px solid #d3d1c7">裁决人</th><th style="text-align:left;padding:6px 8px;border-bottom:0.5px solid #d3d1c7">决定</th></tr><tr><td style="padding:6px 8px;white-space:nowrap">2026-11-06</td><td style="padding:6px 8px;white-space:nowrap">人类审核方</td><td style="padding:6px 8px">工具不连接 Databricks，SQL 由使用者自行执行</td></tr><tr><td style="padding:6px 8px;white-space:nowrap">2026-11-08</td><td style="padding:6px 8px;white-space:nowrap">人类审核方</td><td style="padding:6px 8px">知识库以云端 CPT月结 项目为准，人类负责更新；当前先用本地快照</td></tr></table>
+
+  <h3 style="font-size:14px;margin:18px 0 8px">目录一览（文件总线）</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">需求原文<span style="color:#b4b2a9;font-weight:400;font-size:11px"> 00-inbox/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">人类审核方输入，任何人不得修改</div><ul style="padding-left:16px;margin:0"><li style="margin:3px 0;font-size:12px;word-break:break-all">001-原始需求.md<span style="color:#b4b2a9"> (381B)</span></li></ul></div><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">规格与分析<span style="color:#b4b2a9;font-weight:400;font-size:11px"> 01-spec/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">WorkBuddy 写，CodeBuddy 只读</div><ul style="padding-left:16px;margin:0"><li style="margin:3px 0;font-size:12px;word-break:break-all">R001-spec.md<span style="color:#b4b2a9"> (7662B)</span></li><li style="margin:3px 0;font-size:12px;word-break:break-all">R001-范围澄清.md<span style="color:#b4b2a9"> (4161B)</span></li></ul></div><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">技术方案<span style="color:#b4b2a9;font-weight:400;font-size:11px"> 02-design/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">WorkBuddy 写，CodeBuddy 只读</div><ul style="padding-left:16px;margin:0"><li style="color:#b4b2a9;font-size:12px">（空）</li></ul></div><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">任务单与回报<span style="color:#b4b2a9;font-weight:400;font-size:11px"> 03-tasks/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">任务单 WorkBuddy 写；回报区 CodeBuddy 只追加</div><ul style="padding-left:16px;margin:0"><li style="margin:3px 0;font-size:12px;word-break:break-all">TEMPLATE.md<span style="color:#b4b2a9"> (2206B)</span></li></ul></div><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">验收清单<span style="color:#b4b2a9;font-weight:400;font-size:11px"> 04-accept/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">WorkBuddy 定稿，只有人类能宣布通过</div><ul style="padding-left:16px;margin:0"><li style="color:#b4b2a9;font-size:12px">（空）</li></ul></div><div style="flex:1;min-width:180px;background:#fff;border:0.5px solid #d3d1c7;border-radius:8px;padding:12px"><div style="font-size:13px;font-weight:500">CPT 知识库<span style="color:#b4b2a9;font-weight:400;font-size:11px"> kb/</span></div><div style="color:#888780;font-size:11px;margin:2px 0 8px">云端为准，人类更新，工具只读</div><ul style="padding-left:16px;margin:0"><li style="margin:3px 0;font-size:12px;word-break:break-all">README.md<span style="color:#b4b2a9"> (1318B)</span></li><li style="margin:3px 0;font-size:12px;word-break:break-all">interfaces.md<span style="color:#b4b2a9"> (4624B)</span></li><li style="margin:3px 0;font-size:12px;word-break:break-all">rules.md<span style="color:#b4b2a9"> (3235B)</span></li><li style="margin:3px 0;font-size:12px;word-break:break-all">tables.md<span style="color:#b4b2a9"> (3350B)</span></li></ul></div></div>
+
+  <h3 style="font-size:14px;margin:18px 0 8px">Git 提交（github.com/xkf-wyf/collaboration）</h3>
+  <ul style="padding-left:16px;margin:0"><li style="margin:4px 0;font-size:12px;font-family:monospace"><span style="color:#185FA5">7dff3ce</span> <span style="color:#888780">11-08 12:45</span> docs(kb): 建立CPT知识库三件套并升级规格至v0.3</li><li style="margin:4px 0;font-size:12px;font-family:monospace"><span style="color:#185FA5">00fa4d4</span> <span style="color:#888780">11-06 12:59</span> chore: 初始化协作契约 v1.1 与目录骨架</li><li style="margin:4px 0;font-size:12px;font-family:monospace"><span style="color:#185FA5">161d348</span> <span style="color:#888780">11-06 13:12</span> Initial commit</li></ul>
+
+  <p style="margin:20px 0 0;color:#b4b2a9;font-size:11px">
+    本页面由 dashboard.py 从目录状态自动生成，只读展示；三方写入仍走文件总线与 Git。</p>
+</div>
+</body></html>
