@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>协作平台</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Segoe UI","Microsoft YaHei",sans-serif; background:#F1EFE8; color:#2C2C2A; font-size:14px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px; }
+header { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+h1 { font-size:18px; font-weight:500; }
+.meta { color:#888780; font-size:12px; margin-bottom:14px; }
+.badge { padding:2px 10px; border-radius:10px; font-size:12px; }
+.b-green { background:#EAF3DE; color:#3B6D11; } .b-amber { background:#FAEEDA; color:#854F0B; }
+.b-red { background:#FCEBEB; color:#A32D2D; } .b-gray { background:#F1EFE8; color:#5F5E5A; }
+.b-blue { background:#E6F1FB; color:#185FA5; }
+.gates { display:flex; gap:10px; margin-bottom:14px; }
+.gates > div { flex:1; background:#fff; border:0.5px solid #d3d1c7; border-radius:8px; padding:9px 14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+.cols { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
+.col { background:#fff; border:0.5px solid #d3d1c7; border-radius:12px; padding:14px; min-height:420px; }
+.col h2 { font-size:14px; font-weight:500; margin-bottom:2px; }
+.col .hint { font-size:11px; color:#888780; margin-bottom:12px; }
+textarea, input[type=text] { width:100%; border:0.5px solid #d3d1c7; border-radius:8px; padding:8px; font-size:13px; font-family:inherit; }
+button { background:#fff; border:0.5px solid #b4b2a9; border-radius:8px; padding:7px 14px; font-size:13px; cursor:pointer; width:100%; margin-top:8px; }
+button:hover { border-color:#5F5E5A; }
+button.primary { background:#185FA5; color:#fff; border-color:#185FA5; }
+.card { background:#F6F5F1; border-radius:8px; padding:9px 10px; margin-bottom:8px; font-size:12px; }
+.card.hl { background:#E6F1FB; }
+.card .t { font-weight:500; font-size:12.5px; }
+.card .s { color:#888780; font-size:11px; margin-top:3px; word-break:break-all; }
+.card .mono { font-family:Consolas,monospace; font-size:11px; color:#5F5E5A; }
+.dec-btns { display:flex; gap:6px; margin-top:6px; }
+.dec-btns button { margin-top:0; padding:4px 0; font-size:12px; }
+.section { margin-top:16px; }
+.section h3 { font-size:13px; font-weight:500; margin-bottom:8px; }
+.files { display:flex; flex-wrap:wrap; gap:6px; }
+.fchip { background:#fff; border:0.5px solid #d3d1c7; border-radius:6px; padding:3px 9px; font-size:11.5px; cursor:pointer; }
+.fchip:hover { border-color:#185FA5; color:#185FA5; }
+.dirlabel { width:100%; font-size:11px; color:#888780; margin-top:6px; }
+.modal { display:none; position:fixed; inset:0; background:rgba(44,44,42,0.35); z-index:10; }
+.modal .box { background:#fff; max-width:860px; max-height:80vh; margin:6vh auto; border-radius:12px; padding:18px; overflow:auto; }
+.modal pre { white-space:pre-wrap; font-size:12px; font-family:Consolas,monospace; line-height:1.55; }
+.toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:#2C2C2A; color:#fff; padding:8px 18px; border-radius:8px; font-size:13px; display:none; z-index:20; }
+.commit { font-size:11.5px; margin-bottom:5px; word-break:break-all; }
+.commit .h { color:#185FA5; font-family:Consolas,monospace; } .commit .d { color:#888780; }
+@media (max-width:900px){ .cols { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>协作平台</h1>
+    <span class="badge b-gray" id="stage">-</span>
+    <span style="margin-left:auto;font-size:12px;color:#888780" id="now"></span>
+  </header>
+  <p class="meta">数据源：F:\NW-诺唯\协作 · 文件总线是唯一真相，平台只是它的界面 · 每 6 秒自动刷新</p>
+  <div class="gates" id="gates"></div>
+
+  <div class="cols">
+    <div class="col">
+      <h2>① 下需求</h2>
+      <p class="hint">你的一句话需求，原文照存 00-inbox，自动提交 Git</p>
+      <textarea id="reqText" rows="4" placeholder="例：GMV大数接口对不上日销看板，做个排查工具"></textarea>
+      <button class="primary" onclick="submitReq()">提交需求</button>
+      <div class="section">
+        <h3>待你裁决（点击即记录并提交 Git）</h3>
+        <div id="pending"><div class="card">加载中…</div></div>
+      </div>
+      <div class="section">
+        <h3>你的裁决记录</h3>
+        <div id="decLog" style="font-size:12px;color:#888780">暂无</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h2>② 任务单（WorkBuddy 写）</h2>
+      <p class="hint">来自 03-tasks/，含完成判据；CodeBuddy 按契约认领</p>
+      <div id="tasks"></div>
+    </div>
+
+    <div class="col">
+      <h2>③ 执行回报（CodeBuddy 写）</h2>
+      <p class="hint">任务单回报区追加，此处展示最新状态</p>
+      <div id="reports"></div>
+      <div class="section">
+        <h3>Git 最近提交</h3>
+        <div id="commits"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>文件一览（点击查看内容）</h3>
+    <div class="files" id="files"></div>
+  </div>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)this.style.display='none'">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b id="mTitle" style="font-size:14px"></b>
+      <button style="width:auto;margin:0" onclick="document.getElementById('modal').style.display='none'">关闭</button>
+    </div>
+    <pre id="mBody"></pre>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let S = null;
+const stColor = v => ({passed:'b-green',pending:'b-amber',blocked:'b-red',done:'b-green',partial:'b-amber',开发中:'b-amber'}[v]||'b-gray');
+
+async function refresh(){
+  try {
+    const r = await fetch('/api/state');
+    S = await r.json();
+    render();
+  } catch(e) { /* 服务未就绪时静默 */ }
+}
+
+function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function render(){
+  document.getElementById('now').textContent = '刷新于 ' + S.now;
+  const st = document.getElementById('stage');
+  st.textContent = S.stage; st.className = 'badge ' + stColor(S.stage);
+
+  document.getElementById('gates').innerHTML = S.gates.map(g =>
+    `<div><span>${esc(g.label)}</span><span class="badge ${stColor(g.value)}">${esc(g.value)}</span></div>`
+  ).join('') || '<div>状态文件中未定义门禁</div>';
+
+  document.getElementById('pending').innerHTML = S.pending.length
+    ? S.pending.map(p=>`<div class="card"><div class="t">${esc(p)}</div>
+        <div class="dec-btns">
+          <button onclick="decide('${esc(p).replace(/'/g,"\\'")}','确认')">确认</button>
+          <button onclick="decide('${esc(p).replace(/'/g,"\\'")}','驳回')">驳回</button>
+          <button onclick="decide('${esc(p).replace(/'/g,"\\'")}','部分确认')">部分确认</button>
+        </div></div>`).join('')
+    : (S.questions.length
+        ? S.questions.map(q=>`<div class="card"><div class="t">${esc(q)}</div>
+            <div class="dec-btns">
+              <button onclick="decide('${esc(q).replace(/'/g,"\\'")}','确认')">确认</button>
+              <button onclick="decide('${esc(q).replace(/'/g,"\\'")}','驳回')">驳回</button>
+            </div></div>`).join('')
+        : '<div class="card">无待裁决项</div>');
+
+  document.getElementById('decLog').innerHTML = S.decision_log.length
+    ? S.decision_log.slice().reverse().map(d=>
+        `<div class="card"><div class="t">${esc(d.target)} → <b>${esc(d.choice)}</b></div>
+         <div class="s">${esc(d.ts)}${d.note?' · '+esc(d.note):''}</div></div>`).join('')
+    : '暂无';
+
+  document.getElementById('tasks').innerHTML = S.tasks.length
+    ? S.tasks.map(t=>`<div class="card"><div class="t">${esc(t.id)} ${esc(t.title)}
+        <span class="badge ${stColor(t.status)}" style="margin-left:6px">${esc(t.status)}</span></div>
+        <div class="s mono">${esc(t.file)}${t.reports.length&&t.reports[t.reports.length-1].branch?' · '+esc(t.reports[t.reports.length-1].branch):''}</div></div>`).join('')
+    : '<div class="card">暂无任务单——需求提审后由 WorkBuddy 产出</div>';
+
+  const reps = S.tasks.flatMap(t=>t.reports.map(r=>({...r, id:t.id, title:t.title, file:t.file})));
+  document.getElementById('reports').innerHTML = reps.length
+    ? reps.map(r=>`<div class="card"><div class="t">${esc(r.id)} 
+        <span class="badge ${stColor(r.status)}">${esc(r.status)}</span></div>
+        <div class="s mono">${esc(r.branch||'-')}</div>
+        <div class="s">${esc(r.excerpt)}</div></div>`).join('')
+    : '<div class="card">暂无回报——CodeBuddy 尚未执行首单</div>';
+
+  document.getElementById('commits').innerHTML = S.commits.map(c=>
+    `<div class="commit"><span class="h">${esc(c.hash)}</span> <span class="d">${esc(c.date)}</span> ${esc(c.msg)}</div>`).join('');
+
+  let fh = '';
+  for (const [d, list] of Object.entries(S.dirs)) {
+    fh += `<span class="dirlabel">${d}/</span>`;
+    fh += list.map(f=>`<span class="fchip" onclick="viewFile('${d}/${esc(f)}')">${esc(f)}</span>`).join('');
+  }
+  document.getElementById('files').innerHTML = fh || '<span class="dirlabel">无</span>';
+}
+
+async function submitReq(){
+  const t = document.getElementById('reqText').value.trim();
+  if (!t) return toast('需求内容不能为空');
+  const r = await fetch('/api/requirement', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text:t})});
+  const j = await r.json();
+  if (j.ok) { document.getElementById('reqText').value=''; toast('需求已收录：'+j.file); refresh(); }
+  else toast(j.error||'提交失败');
+}
+
+async function decide(target, choice){
+  const note = prompt('补充说明（可留空）：') || '';
+  const r = await fetch('/api/decision', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({target, choice, note})});
+  const j = await r.json();
+  if (j.ok) { toast('裁决已记录：'+choice); refresh(); } else toast(j.error||'记录失败');
+}
+
+async function viewFile(p){
+  const r = await fetch('/api/file?path='+encodeURIComponent(p));
+  const j = await r.json();
+  if (j.error) return toast(j.error);
+  document.getElementById('mTitle').textContent = p;
+  document.getElementById('mBody').textContent = j.content;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(()=>t.style.display='none', 2600);
+}
+
+refresh();
+setInterval(refresh, 6000);
+</script>
+</body>
+</html>

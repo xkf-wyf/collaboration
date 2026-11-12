@@ -1,0 +1,72 @@
+-- Databricks notebook source
+-- MAGIC %python
+-- MAGIC dbutils.widgets.text('dt','2026-03-13','月份')
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC import os
+-- MAGIC from datetime import datetime
+-- MAGIC from dateutil.relativedelta import relativedelta
+-- MAGIC
+-- MAGIC cl_ads = spark.conf.get('spark.var.catalog.ads')
+-- MAGIC cl_dim = spark.conf.get('spark.var.catalog.dim')
+-- MAGIC dt = dbutils.widgets.get("dt")
+-- MAGIC current_date = datetime.strptime(dt, '%Y-%m-%d')
+-- MAGIC last_month_date = current_date - relativedelta(months=1)
+-- MAGIC mth = last_month_date.strftime("%Y%m")
+-- MAGIC
+-- MAGIC table_name = f'{cl_dim}.fin.dim_store_2c_mf'
+-- MAGIC out_path = f'/Volumes/{cl_ads}/fin_cpt/vol_cpt_outbound_cpt/cpt_store_master/'
+-- MAGIC file_name = f'cpt_store_master_{mth}.csv'
+-- MAGIC full_output_path = os.path.join(out_path, file_name)
+-- MAGIC
+-- MAGIC dbutils.fs.mkdirs(out_path)
+-- MAGIC
+-- MAGIC try:
+-- MAGIC     if dbutils.fs.ls(full_output_path):
+-- MAGIC         dbutils.fs.rm(full_output_path)
+-- MAGIC         print(f"已删除同名旧文件：{full_output_path}")
+-- MAGIC except Exception as e:
+-- MAGIC     print(f"未检测到同名旧文件，无需删除：{full_output_path}")
+-- MAGIC
+-- MAGIC df = spark.sql(f'''
+-- MAGIC     select 
+-- MAGIC 	  CUSTOMER_TYPE_CODE
+-- MAGIC 	 ,CUSTOMER_TYPE
+-- MAGIC 	 ,ON_OFFLINE
+-- MAGIC 	 ,SITE_CODE
+-- MAGIC 	 ,SITE_NAME
+-- MAGIC 	 ,STORE_CODE
+-- MAGIC 	 ,STORE_NAME
+-- MAGIC 	 ,CREATE_BY
+-- MAGIC 	 ,CREATE_TIME
+-- MAGIC     from {table_name} where dt = '{dt}';
+-- MAGIC ''')
+-- MAGIC
+-- MAGIC temp_write_path = f"{out_path}_temp" 
+-- MAGIC (
+-- MAGIC     df.coalesce(1) 
+-- MAGIC       .write
+-- MAGIC       .mode('overwrite') 
+-- MAGIC       .option('header', 'true')
+-- MAGIC       .option('sep', ',')
+-- MAGIC       .option('encoding', 'utf-8')
+-- MAGIC       .csv(temp_write_path)  
+-- MAGIC )
+-- MAGIC
+-- MAGIC csv_files = [f for f in dbutils.fs.ls(temp_write_path) if f.name.endswith('.csv') and not f.name.startswith('_')]
+-- MAGIC if csv_files:
+-- MAGIC     original_csv_path = csv_files[0].path
+-- MAGIC     dbutils.fs.mv(original_csv_path, full_output_path)
+-- MAGIC     print(f"新文件已生成：{full_output_path}")
+-- MAGIC     
+-- MAGIC     dbutils.fs.rm(temp_write_path, recurse=True)
+-- MAGIC else:
+-- MAGIC     raise Exception("未生成有效CSV文件，请检查数据是否为空")
+-- MAGIC
+-- MAGIC for file_info in dbutils.fs.ls(out_path):
+-- MAGIC     if file_info.name.startswith('_'):
+-- MAGIC         dbutils.fs.rm(file_info.path)
+-- MAGIC
+-- MAGIC print(f"文件导出完成，最终路径：{full_output_path}")

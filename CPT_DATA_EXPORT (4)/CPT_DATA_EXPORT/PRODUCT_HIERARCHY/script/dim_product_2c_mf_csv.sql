@@ -1,0 +1,113 @@
+-- Databricks notebook source
+-- MAGIC %python
+-- MAGIC dbutils.widgets.text('dt','2026-03-13','月份')
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC import os
+-- MAGIC from datetime import datetime
+-- MAGIC from dateutil.relativedelta import relativedelta
+-- MAGIC
+-- MAGIC cl_ads = spark.conf.get('spark.var.catalog.ads')
+-- MAGIC cl_dim = spark.conf.get('spark.var.catalog.dim')
+-- MAGIC dt = dbutils.widgets.get("dt")
+-- MAGIC current_date = datetime.strptime(dt, '%Y-%m-%d')
+-- MAGIC last_month_date = current_date - relativedelta(months=1)
+-- MAGIC mth = last_month_date.strftime("%Y%m")
+-- MAGIC
+-- MAGIC table_name = f'{cl_dim}.fin.dim_product_2c_mf'
+-- MAGIC out_path = f'/Volumes/{cl_ads}/fin_cpt/vol_cpt_outbound_cpt/cpt_product_hierarchy/'
+-- MAGIC file_name = f'cpt_product_hierarchy_{mth}.csv'
+-- MAGIC full_output_path = os.path.join(out_path, file_name)
+-- MAGIC
+-- MAGIC dbutils.fs.mkdirs(out_path)
+-- MAGIC
+-- MAGIC try:
+-- MAGIC     if dbutils.fs.ls(full_output_path):
+-- MAGIC         dbutils.fs.rm(full_output_path)
+-- MAGIC         print(f"已删除同名旧文件：{full_output_path}")
+-- MAGIC except Exception as e:
+-- MAGIC     print(f"未检测到同名旧文件，无需删除：{full_output_path}")
+-- MAGIC
+-- MAGIC df = spark.sql(f'''
+-- MAGIC         select 
+-- MAGIC 	  PRODUCT_CODE
+-- MAGIC 	 ,PRODUCT_NAME_CN
+-- MAGIC 	 ,PRODUCT_NAME_EN
+-- MAGIC 	 ,GLOBAL_L1_DIVISIONCODE
+-- MAGIC 	 ,GLOBAL_L1_DIVISIONNAME
+-- MAGIC 	 ,GLOBAL_L2_SUBDIVISIONCODE
+-- MAGIC 	 ,GLOBAL_L2_SUBDIVISIONNAME
+-- MAGIC 	 ,GLOBAL_L3_CATEGORYCODE
+-- MAGIC 	 ,GLOBAL_L3_CATEGORYNAME
+-- MAGIC 	 ,GLOBAL_L4_MARKETCODE
+-- MAGIC 	 ,GLOBAL_L4_MARKETNAME
+-- MAGIC 	 ,GLOBAL_L5_CORPBRANDCODE
+-- MAGIC 	 ,GLOBAL_L5_CORPBRANDNAME
+-- MAGIC 	 ,GLOBAL_L6_SECTORCODE
+-- MAGIC 	 ,GLOBAL_L6_SECTORNAME
+-- MAGIC 	 ,GLOBAL_L7_CORPPROGCODE
+-- MAGIC 	 ,GLOBAL_L7_CORPPROGNAME
+-- MAGIC 	 ,GLOBAL_L8_SUBBRAND_CODE
+-- MAGIC 	 ,GLOBAL_L8_SUBBRAND_NAME
+-- MAGIC 	 ,GLOBAL_L9_PACK_CODE
+-- MAGIC 	 ,GLOBAL_L9_PACK_NAME
+-- MAGIC 	 ,STATE
+-- MAGIC 	 ,BU_CODE
+-- MAGIC 	 ,BU_NAME_EN
+-- MAGIC 	 ,BU_ABBRNAME
+-- MAGIC 	 ,BU_NAME_CN
+-- MAGIC 	 ,CATEGORY_CODE
+-- MAGIC 	 ,CATEGORY_NAME_EN
+-- MAGIC 	 ,CATEGORY_ABBRNAME
+-- MAGIC 	 ,CATEGORY_NAME_CN
+-- MAGIC 	 ,SUBCATEGORY_CODE
+-- MAGIC 	 ,SUBCATEGORY_NAME_EN
+-- MAGIC 	 ,SUBCATEGORY_NAME_CN
+-- MAGIC 	 ,BRAND_CODE
+-- MAGIC 	 ,BRAND_NAME_EN
+-- MAGIC 	 ,BRAND_NAME_CN
+-- MAGIC 	 ,SUBBRAND_CODE
+-- MAGIC 	 ,SUBBRAND_NAME
+-- MAGIC 	 ,PRODUCT_LINE_GROUP_CODE
+-- MAGIC 	 ,PRODUCT_LINE_GROUP
+-- MAGIC 	 ,PACKSIZE
+-- MAGIC 	 ,CORE_PACK_GROUP_CODE
+-- MAGIC 	 ,CORE_PACK_GROUP
+-- MAGIC 	 ,AROMA_TYPE
+-- MAGIC 	 ,BOX_DIMENSION
+-- MAGIC 	 ,MINIMUM_SALEABLE_UNIT
+-- MAGIC 	 ,PRODUCT_TYPE
+-- MAGIC 	 ,NET_WEIGHT
+-- MAGIC 	 ,CREATE_BY
+-- MAGIC 	 ,CREATE_TIME
+-- MAGIC     from {table_name} where dt = '{dt}';
+-- MAGIC ''')
+-- MAGIC
+-- MAGIC temp_write_path = f"{out_path}_temp" 
+-- MAGIC (
+-- MAGIC     df.coalesce(1) 
+-- MAGIC       .write
+-- MAGIC       .mode('overwrite') 
+-- MAGIC       .option('header', 'true')
+-- MAGIC       .option('sep', ',')
+-- MAGIC       .option('encoding', 'utf-8')
+-- MAGIC       .csv(temp_write_path)  
+-- MAGIC )
+-- MAGIC
+-- MAGIC csv_files = [f for f in dbutils.fs.ls(temp_write_path) if f.name.endswith('.csv') and not f.name.startswith('_')]
+-- MAGIC if csv_files:
+-- MAGIC     original_csv_path = csv_files[0].path
+-- MAGIC     dbutils.fs.mv(original_csv_path, full_output_path)
+-- MAGIC     print(f"新文件已生成：{full_output_path}")
+-- MAGIC     
+-- MAGIC     dbutils.fs.rm(temp_write_path, recurse=True)
+-- MAGIC else:
+-- MAGIC     raise Exception("未生成有效CSV文件，请检查数据是否为空")
+-- MAGIC
+-- MAGIC for file_info in dbutils.fs.ls(out_path):
+-- MAGIC     if file_info.name.startswith('_'):
+-- MAGIC         dbutils.fs.rm(file_info.path)
+-- MAGIC
+-- MAGIC print(f"文件导出完成，最终路径：{full_output_path}")

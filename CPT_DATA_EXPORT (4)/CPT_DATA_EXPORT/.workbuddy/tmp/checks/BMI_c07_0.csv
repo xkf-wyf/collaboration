@@ -1,0 +1,135 @@
+﻿store_name,bu,category_name,brand_name,gap_absolute_mth01,gap_absolute_mth02,gap_absolute_mth03,gap_absolute_mth04,gap_absolute_mth05,gap_absolute_mth06,gap_absolute_mth07,gap_absolute_mth08,gap_absolute_mth09,gap_absolute_mth10,gap_absolute_mth11,gap_absolute_mth12,gap_absolute_ytd,gap_rate_mth01,gap_rate_mth02,gap_rate_mth03,gap_rate_mth04,gap_rate_mth05,gap_rate_mth06,gap_rate_mth07,gap_rate_mth08,gap_rate_mth09,gap_rate_mth10,gap_rate_mth11,gap_rate_mth12,gap_rate_ytd
+JD - AHC,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - AHC,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - AHC,PERSONAL CARE,PW,DOVE,0,null,0,null,null,0,0,null,0,0,null,null,0,0.0,null,0.0,null,null,0.0,0.0,null,0.0,0.0,null,null,0.0
+JD - AHC CBE,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,8704,45671,27787,31050,43151,48622,132490,null,null,337477,0.0,0.0,0.0,0.0029978,0.01131091,0.00610881,0.0109757,0.01205354,0.01138294,0.02673088,null,null,0.00955893
+JD - UL,BEAUTY&WELLBEING,HAIR,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,HAIR,HAZELINE,6764,213,562,1035,934,550,null,null,null,null,null,null,10060,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,null,null,null,1.0
+JD - UL,BEAUTY&WELLBEING,HAIR,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,HAIR,NEXXUS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,SKIN,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,SKIN,PONDS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,BEAUTY&WELLBEING,SKIN,VASELINE,1530,1558,1452,1355,995,718,649,395,1079,2572,null,null,12306,0.00234815,0.00258694,0.00135648,0.002019,0.00135665,9.4957E-4,0.00114046,7.8313E-4,0.00123685,0.001347,null,null,0.0014755
+JD - UL,HOME CARE,FCL,COMFORT,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,FCL,LHP,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,FCL,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,FCL,THE LAUNDRESS,0,null,null,null,null,null,null,null,null,null,null,null,0,0.0,null,null,null,null,null,null,null,null,null,null,null,0.0
+JD - UL,HOME CARE,FEN,COMFORT,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,FEN,LHP,0,0,0,0,0,0,null,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,null,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,FEN,THE LAUNDRESS,0,null,null,null,null,null,null,null,null,null,null,null,0,0.0,null,null,null,null,null,null,null,null,null,null,null,0.0
+JD - UL,HOME CARE,HHC,CIF,null,null,null,null,null,null,null,null,15099,19128,null,null,34227,null,null,null,null,null,null,null,null,0.37821251,0.16142862,null,null,0.21605909
+JD - UL,HOME CARE,HHC,DOMESTOS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,HOME CARE,HHC,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,PERSONAL CARE,DEO,LUX,null,null,null,null,null,null,null,null,894,40180,null,null,41074,null,null,null,null,null,null,null,null,1.0,1.0,null,null,1.0
+JD - UL,PERSONAL CARE,DEO,REXONA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,PERSONAL CARE,ORAL,REGENERATE,106816,97168,114205,105805,122887,126198,146567,209701,231672,199758,null,null,1460783,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,1.0
+JD - UL,PERSONAL CARE,ORAL,ZHONG HUA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,PERSONAL CARE,PW,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,PERSONAL CARE,PW,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL,PERSONAL CARE,PW,HAZELINE,1,null,null,7,null,1,4,null,null,null,null,null,14,1.0,null,null,1.0,null,1.0,1.0,null,null,null,null,null,1.0
+JD - UL,PERSONAL CARE,PW,LUX,0,0,15982,0,0,0,0,0,0,0,null,null,15982,0.0,0.0,0.00829905,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,8.9462E-4
+JD - UL,PERSONAL CARE,PW,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+JD - UL CBE,BEAUTY&WELLBEING,HAIR,CLEAR,843,549,1101,1720,1224,2236,903,null,null,null,null,null,8580,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,null,null,1.0
+JD - UL CBE,BEAUTY&WELLBEING,HAIR,DOVE,21665,11340,19778,5892,7379,9858,13838,9162,783,null,null,null,99700,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,1.0
+JD - UL CBE,BEAUTY&WELLBEING,HAIR,LUX,1154,934,1047,1107,1062,1290,276,null,null,null,null,null,6874,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,null,null,1.0
+JD - UL CBE,BEAUTY&WELLBEING,SKIN,DOVE,41382,28967,30733,27005,28996,26434,27746,13052,325,null,null,null,224644,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,1.0
+JD - UL CBE,BEAUTY&WELLBEING,SKIN,OTHERS,1013,1268,1408,1583,1643,1392,1585,1445,55,null,null,null,11395,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,1.0
+JD - UL CBE,BEAUTY&WELLBEING,SKIN,VASELINE,91602,44078,41392,24722,19798,14291,9515,9473,217,null,null,null,255093,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,null,1.0
+PDD - AHC,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - AHC DTC,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,BEAUTY&WELLBEING,HAIR,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,BEAUTY&WELLBEING,HAIR,HAZELINE,118961,105870,154681,146892,180097,179690,261426,283112,243241,303193,null,null,1977166,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,null,null,1.0
+PDD - UL,BEAUTY&WELLBEING,HAIR,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,BEAUTY&WELLBEING,SKIN,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,BEAUTY&WELLBEING,SKIN,PONDS,1571,0,0,0,0,0,0,0,0,0,null,null,1571,0.00437065,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,2.4408E-4
+PDD - UL,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,HOME CARE,FCL,COMFORT,null,null,null,null,0,0,0,0,0,0,null,null,0,null,null,null,null,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,HOME CARE,FCL,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,HOME CARE,FEN,COMFORT,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,HOME CARE,FEN,OMO,null,null,null,null,null,null,null,null,0,0,null,null,0,null,null,null,null,null,null,null,null,0.0,0.0,null,null,0.0
+PDD - UL,HOME CARE,HHC,DOMESTOS,0,0,0,0,0,0,0,null,null,null,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,null,null,null,0.0
+PDD - UL,HOME CARE,HHC,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,PERSONAL CARE,DEO,LUX,null,null,null,null,null,null,null,null,3371,45339,null,null,48710,null,null,null,null,null,null,null,null,1.0,1.0,null,null,1.0
+PDD - UL,PERSONAL CARE,DEO,REXONA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,PERSONAL CARE,ORAL,ZHONG HUA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,PERSONAL CARE,PW,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - UL,PERSONAL CARE,PW,DOVE,1000,0,0,0,0,0,0,0,0,0,null,null,1000,8.5036E-4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,6.887E-5
+PDD - UL,PERSONAL CARE,PW,LUX,600,0,0,0,0,0,0,0,0,0,null,null,600,5.0216E-4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,2.859E-5
+PDD - UL,PERSONAL CARE,PW,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+PDD - VSL,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - AHC,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - AHC CBE,BEAUTY&WELLBEING,SKIN,AHC,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,BEAUTY&WELLBEING,HAIR,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,BEAUTY&WELLBEING,HAIR,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,BEAUTY&WELLBEING,SKIN,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,DEO,LUX,null,null,null,null,null,null,null,null,null,3257,null,null,3257,null,null,null,null,null,null,null,null,null,1.0,null,null,1.0
+TMALL FGS - BPC,PERSONAL CARE,DEO,REXONA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,ORAL,ZHONG HUA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,PW,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,PW,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,PW,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC,PERSONAL CARE,PW,VASELINE,null,null,null,null,null,null,null,0,0,0,null,null,0,null,null,null,null,null,null,null,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,HAIR,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,HAIR,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,SKIN,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,SKIN,PONDS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - BPC CBE,PERSONAL CARE,PW,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - CLEAR,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - CLEAR,PERSONAL CARE,PW,CLEAR,null,null,null,null,null,null,null,null,0,0,null,null,0,null,null,null,null,null,null,null,null,0.0,0.0,null,null,0.0
+TMALL FGS - HC,HOME CARE,FCL,COMFORT,null,null,null,null,null,null,null,null,0,0,null,null,0,null,null,null,null,null,null,null,null,0.0,0.0,null,null,0.0
+TMALL FGS - HC,HOME CARE,FCL,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - HC,HOME CARE,FEN,COMFORT,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - HC,HOME CARE,HHC,DOMESTOS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - HC,HOME CARE,HHC,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - LUX,BEAUTY&WELLBEING,HAIR,LUX,null,null,null,null,null,null,0,0,0,0,null,null,0,null,null,null,null,null,null,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - LUX,PERSONAL CARE,DEO,LUX,null,null,null,null,null,null,null,null,null,63348,null,null,63348,null,null,null,null,null,null,null,null,null,1.0,null,null,1.0
+TMALL FGS - LUX,PERSONAL CARE,PW,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - NEXXUS,BEAUTY&WELLBEING,HAIR,NEXXUS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - PONDS,BEAUTY&WELLBEING,SKIN,PONDS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - REGENERATE,PERSONAL CARE,ORAL,REGENERATE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - REGENERATE,PERSONAL CARE,ORAL,SIGNAL,null,null,null,null,null,null,null,null,0,0,null,null,0,null,null,null,null,null,null,null,null,0.0,0.0,null,null,0.0
+TMALL FGS - VSL,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - VSL,PERSONAL CARE,PW,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL FGS - ZHONGHUA,PERSONAL CARE,ORAL,ZHONG HUA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,HAIR,CLEAR,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,HAIR,DOVE,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,HAIR,HAZELINE,null,null,99,null,25655,15241,7,null,null,null,null,null,41004,null,null,1.0,null,1.0,1.0,1.0,null,null,null,null,null,1.0
+TMALL SUPER,BEAUTY&WELLBEING,HAIR,LUX,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,SKIN,AHC,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,SKIN,DOVE,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,SKIN,PONDS,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,BEAUTY&WELLBEING,SKIN,VASELINE,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,DEO,LUX,null,null,null,null,null,null,null,null,null,4175,null,null,4175,null,null,null,null,null,null,null,null,null,1.0,null,null,1.0
+TMALL SUPER,PERSONAL CARE,DEO,REXONA,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,ORAL,ZHONG HUA,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,PW,CLEAR,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,PW,DOVE,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,PW,LUX,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER,PERSONAL CARE,PW,VASELINE,null,0,0,0,0,0,0,0,0,0,null,null,0,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,HAIR,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,HAIR,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,HAIR,HAZELINE,6,null,null,null,null,null,null,null,null,null,null,null,6,1.0,null,null,null,null,null,null,null,null,null,null,null,1.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,HAIR,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,HAIR,NEXXUS,0,0,0,0,0,0,null,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,null,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,SKIN,AHC,0,0,null,null,null,null,null,0,0,0,null,null,0,0.0,0.0,null,null,null,null,null,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,SKIN,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,SKIN,PONDS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,BEAUTY&WELLBEING,SKIN,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,FCL,LHP,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,FCL,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,FCL,THE LAUNDRESS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,FEN,COMFORT,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,FEN,THE LAUNDRESS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,HHC,DOMESTOS,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,HOME CARE,HHC,OMO,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,DEO,REXONA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,ORAL,ZHONG HUA,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,PW,CLEAR,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,PW,DOVE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,PW,LUX,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0
+TMALL SUPER - UL,PERSONAL CARE,PW,VASELINE,0,0,0,0,0,0,0,0,0,0,null,null,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,0.0

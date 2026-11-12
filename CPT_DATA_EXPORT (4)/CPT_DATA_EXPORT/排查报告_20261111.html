@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPT B2C 接口数据排查报告</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #f5f6f8; color: #1f2329;
+    font-size: 14px; line-height: 1.7;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 32px 80px; }
+  header { border-bottom: 3px solid #1f2329; padding-bottom: 20px; margin-bottom: 36px; }
+  h1 { font-size: 27px; margin: 0 0 10px; letter-spacing: -0.3px; }
+  .meta { font-size: 13px; color: #646a73; }
+  .meta span { margin-right: 18px; }
+  .meta b { color: #1f2329; font-weight: 600; }
+
+  h2 {
+    font-size: 19px; margin: 44px 0 16px; padding-left: 12px;
+    border-left: 4px solid #1f2329;
+  }
+  h3 { font-size: 15px; margin: 28px 0 10px; color: #1f2329; }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 24px 0 8px; }
+  .kpi {
+    background: #fff; border: 1px solid #e3e5e9; border-radius: 8px; padding: 16px 18px;
+  }
+  .kpi .lab { font-size: 12px; color: #646a73; margin-bottom: 8px; }
+  .kpi .val { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+  .kpi .sub { font-size: 12px; color: #8a9099; margin-top: 4px; }
+  .red { color: #d93026; } .green { color: #1a7f47; } .grey { color: #8a9099; }
+
+  table { width: 100%; border-collapse: collapse; background: #fff; margin: 14px 0 6px;
+          border: 1px solid #e3e5e9; border-radius: 8px; overflow: hidden; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid #eef0f3; font-size: 13px; }
+  th { background: #fafbfc; font-weight: 600; color: #4e5969; font-size: 12px; white-space: nowrap; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fbfcfd; }
+  tfoot td { background: #fafbfc; font-weight: 700; border-top: 2px solid #e3e5e9; }
+
+  .tag {
+    display: inline-block; padding: 1px 7px; border-radius: 4px;
+    font-size: 11px; font-weight: 600; line-height: 18px;
+  }
+  .t-p0 { background: #fde8e6; color: #b3261e; }
+  .t-p1 { background: #fff1e0; color: #a35b00; }
+  .t-p2 { background: #eef1f6; color: #4e5969; }
+  .t-ok { background: #e6f4ec; color: #1a7f47; }
+
+  .card { background: #fff; border: 1px solid #e3e5e9; border-radius: 8px; padding: 20px 22px; margin: 16px 0; }
+  .card.hl { border-left: 4px solid #d93026; }
+  .card h4 { margin: 0 0 10px; font-size: 15px; }
+  .card p { margin: 8px 0; }
+  .card ul { margin: 8px 0; padding-left: 22px; }
+  .card li { margin: 5px 0; }
+
+  code {
+    background: #f2f4f7; padding: 1px 5px; border-radius: 3px;
+    font-family: "SF Mono", Consolas, monospace; font-size: 12.5px; color: #b3261e;
+  }
+  pre {
+    background: #f8f9fb; border: 1px solid #e8eaee; border-radius: 6px;
+    padding: 14px 16px; overflow-x: auto; font-size: 12.5px; line-height: 1.6;
+    font-family: "SF Mono", Consolas, monospace; color: #2c3540;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  .note {
+    font-size: 12.5px; color: #646a73; border-left: 3px solid #dcdfe5;
+    padding: 2px 0 2px 12px; margin: 12px 0;
+  }
+  .bar { height: 7px; background: #eef0f3; border-radius: 4px; overflow: hidden; display: inline-block; width: 80px; vertical-align: middle; }
+  .bar i { display: block; height: 100%; }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid #e3e5e9; font-size: 12px; color: #8a9099; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>CPT B2C 接口数据排查报告</h1>
+  <div class="meta">
+    <span>接口 <b>机制GMV（SECONDARY_GSV_GMV）</b> · <b>BMI Spending</b></span>
+    <span>取数快照 <b>dt=2026-11-10 / 2026-11-11</b></span>
+    <span>分析窗口 <b>2026-01 ~ 2026-10</b></span>
+    <span>编制 <b>2026-11-11</b></span>
+  </div>
+</header>
+
+<div class="kpis">
+  <div class="kpi">
+    <div class="lab">GMV 接口 2026 YTD 差异</div>
+    <div class="val red">-2.10 亿</div>
+    <div class="sub">CPT 43.59 亿 / 源 45.69 亿（-4.59%）</div>
+  </div>
+  <div class="kpi">
+    <div class="lab">其中品线组缺失贡献</div>
+    <div class="val red">-3.97 亿</div>
+    <div class="sub">TMALL SUPER / -UL / VIP-AHC 三处</div>
+  </div>
+  <div class="kpi">
+    <div class="lab">BMI RTB 差异</div>
+    <div class="val green">+466 万</div>
+    <div class="sub">CPT 5.285 亿 / 看板 5.238 亿（+0.89%）</div>
+  </div>
+  <div class="kpi">
+    <div class="lab">PFM / CPS 差异</div>
+    <div class="val grey">0</div>
+    <div class="sub">全 10,060 行零差异 → 校验失效</div>
+  </div>
+</div>
+
+<div class="note">
+  数据来源：<code>校验/正式脚本_03_机制GMV Check.ipynb</code> 与 <code>校验/正式脚本_04_BMI Spending Check.ipynb</code> 中已保存的执行结果（最新 dt 快照），
+  经解析后逐维度复核。所有金额单位为元。
+</div>
+
+<h2>一、结论先行</h2>
+
+<div class="card">
+  <p><b>接口一：机制GMV。</b>总量少 2.10 亿（-4.59%），但差异几乎<b>不分散</b>——58% 集中在 TMALL SUPER 一个店，前 5 个店铺覆盖 96%（差异绝对值合计 3.65 亿）。
+  归因上，<b>源侧品线组（product_line_group）为空的 GMV 在 CPT 侧整段没有输出</b>，这一条即可解释 TMALL SUPER 的 -46% 和 TMALL SUPER - UL 的 -13%。
+  另有 PDD - AHC / PDD - AHC DTC 两侧主键完全对不上，930 万处于"不可核对"状态。</p>
+  <p><b>接口二：BMI Spending。</b>RTB 链路差 466 万（+0.89%），其中 95% 落在 JD 的 <code>ORAL / REGENERATE</code> 品类，
+  根因是黄金公式看板缺这个组合。但这个量级属可接受范围。
+  <b>真正需要关注的是 PFM 与 CPS 两条链路 10,060 行全部零差异</b>——说明两侧走的是同一条加工链路，校验不具独立性，不能作为质量证据。</p>
+</div>
+
+<h2>二、接口一：机制 GMV（<code>ads_secondary_gsv_gmv_mf</code> → <code>cpt_second_sales_yyyymm.csv</code>）</h2>
+
+<h3>2.1 差异分布：高度集中在 4 个店铺</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>店铺</th>
+      <th class="n">CPT 输出</th>
+      <th class="n">源侧 GMV</th>
+      <th class="n">差异</th>
+      <th class="n">差异率</th>
+      <th>判定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>TMALL SUPER</td><td class="n">247,256,956</td><td class="n">459,578,937</td><td class="n red">-212,321,981</td><td class="n red">-46.20%</td><td><span class="tag t-p0">P0 品线组缺失</span></td></tr>
+    <tr><td>VIP - UL</td><td class="n">74,440,561</td><td class="n">114,822,921</td><td class="n red">-40,382,360</td><td class="n red">-35.17%</td><td><span class="tag t-p2">P2 口径拐点</span></td></tr>
+    <tr><td>TMALL SUPER - UL</td><td class="n">250,158,904</td><td class="n">286,363,455</td><td class="n red">-36,204,551</td><td class="n red">-12.64%</td><td><span class="tag t-p0">P0 品线组缺失</span></td></tr>
+    <tr><td>JD - UL</td><td class="n">1,390,231,977</td><td class="n">1,411,949,049</td><td class="n red">-21,717,072</td><td class="n">-1.54%</td><td><span class="tag t-p2">P2 单月异常</span></td></tr>
+    <tr><td>PDD - UL</td><td class="n">866,218,928</td><td class="n">825,934,186</td><td class="n green">+40,284,742</td><td class="n">+4.88%</td><td><span class="tag t-p2">P2 多出</span></td></tr>
+    <tr><td>PDD - AHC DTC</td><td class="n">5,848,831</td><td class="n">0</td><td class="n red">+5,848,831</td><td class="n grey">—</td><td><span class="tag t-p1">P1 主键对不上</span></td></tr>
+    <tr><td>PDD - AHC</td><td class="n">3,455,506</td><td class="n">0</td><td class="n red">+3,455,506</td><td class="n grey">—</td><td><span class="tag t-p1">P1 主键对不上</span></td></tr>
+    <tr><td>TMALL FGS - BPC</td><td class="n">343,954,882</td><td class="n">346,743,976</td><td class="n">-2,789,094</td><td class="n">-0.80%</td><td><span class="tag t-ok">正常</span></td></tr>
+    <tr><td>PDD - VSL</td><td class="n">35,575,155</td><td class="n">33,815,181</td><td class="n">+1,759,974</td><td class="n">+5.20%</td><td><span class="tag t-ok">正常</span></td></tr>
+    <tr><td>其余 16 个店铺合计</td><td class="n">—</td><td class="n">—</td><td class="n">-583,752</td><td class="n">≈0</td><td><span class="tag t-ok">正常</span></td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td>合计</td><td class="n">4,359,042,049</td><td class="n">4,568,571,066</td><td class="n red">-209,529,017</td><td class="n red">-4.59%</td><td></td></tr>
+  </tfoot>
+</table>
+
+<div class="note">
+  差异率 = (CPT − 源) / 源。TMALL FGS 全系（BPC / VSL / HC / CLEAR / AHC / POND 等 11 个店）合计差异 &lt; 300 万，差异率均在 0.1% 以内，口径是稳的。
+</div>
+
+<h3>2.2 P0：品线组为空的 GMV 在 CPT 侧整段消失</h3>
+
+<div class="card hl">
+  <h4>现象</h4>
+  <p>在核对明细里，凡源侧 <code>product_line_group</code> 为 <code>null</code> 的行，CPT 侧的 <code>item_gmv</code> 一律为 <b>0</b>。这批金额规模如下：</p>
+  <table style="margin-top:10px">
+    <thead>
+      <tr><th>店铺</th><th class="n">源侧 GMV</th><th class="n">其中品线组为空</th><th class="n">占比</th><th class="n">该组 CPT 输出</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>TMALL SUPER</td><td class="n">459,578,937</td><td class="n">250,349,280</td><td class="n red">54.5%</td><td class="n red">0</td></tr>
+      <tr><td>TMALL SUPER - UL</td><td class="n">286,363,455</td><td class="n">144,175,514</td><td class="n red">50.3%</td><td class="n red">0</td></tr>
+      <tr><td>VIP - AHC</td><td class="n">5,752,327</td><td class="n">3,276,697</td><td class="n red">57.0%</td><td class="n red">0</td></tr>
+      <tr><td>PDD - UL</td><td class="n">825,934,186</td><td class="n">825,934,186</td><td class="n">100.0%</td><td class="n">866,218,928</td></tr>
+      <tr><td>JD - UL</td><td class="n">1,411,949,049</td><td class="n">2,841,321</td><td class="n">0.2%</td><td class="n">—</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:14px"><b>关键对比：</b>PDD - UL 的源侧品线组 100% 为空，但两侧差异只有 +4.88%，因为 CPT 侧同样输出为空 → 主键能匹配上。
+  而 TMALL SUPER 侧，CPT 把这批数据归到了具体品线组（如 <code>LUX CORE SC</code>、<code>DOVE CORE SC</code>），于是源侧的 <code>null</code> 行在 CPT 侧找不到对应行，整段变成缺口。</p>
+</div>
+
+<div class="card">
+  <h4>机理推断</h4>
+  <ul>
+    <li>源侧品线组取自 <code>dim_prd_item.product_line_group</code>，<b>没有兜底</b>，打空即为 <code>null</code>。</li>
+    <li>CPT 主脚本 <code>ads_secondary_gsv_gmv_mf.sql</code> 对品线组做过 <code>nvl(nullif(...), 'OTHERS')</code> 类兜底（同一套逻辑在 <code>ads_omni_secondary_gsv_mf.sql</code> 中是 <code>nvl(nullif(sku.national_ex42,''),'OTHERS')</code>）。</li>
+    <li>结果：源 <code>null</code> ⇄ CPT <code>OTHERS</code>，两边 join 键天然错位。<b>这不是数据缺失，是对账口径不一致</b>——但在 full join 里表现为 CPT "少出"。</li>
+  </ul>
+  <p><b>验证 SQL（在源侧加同样兜底，看差异是否塌缩）：</b></p>
+<pre><code>select
+    coalesce(t1.store_name, t2.store_name) as store_name
+  , sum(coalesce(t1.gmv,0))                                as cpt_gmv
+  , sum(coalesce(t2.gmv,0))                                as source_gmv
+  , sum(coalesce(t1.gmv,0)) - sum(coalesce(t2.gmv,0))      as gap
+from (
+    select store_name, product_line_group, sum(secondary_gmv_amount) as gmv
+    from ${catalog.ads}.fin_cpt.ads_second_total_sales_mf
+    where dt = '2026-11-10' and sales_type = '2C'
+    group by store_name, product_line_group
+) t1
+full join (
+    select customer as store_name
+         , coalesce(product_line_group, 'OTHERS') as product_line_group   -- ← 加兜底
+         , sum(gmv) as gmv
+    from ${catalog.tmp}.fin.tmp_trd_total_item_sales_all
+    where left(period_key,4) = '2026'
+    group by customer, coalesce(product_line_group, 'OTHERS')
+) t2
+  on t1.store_name = t2.store_name and t1.product_line_group = t2.product_line_group
+where coalesce(t1.store_name, t2.store_name) in ('TMALL SUPER','TMALL SUPER - UL')
+group by coalesce(t1.store_name, t2.store_name);</code></pre>
+  <p class="note" style="margin-bottom:0">若差异从 -2.12 亿塌到百万级，即可确认是兜底口径问题，改脚本的 <code>coalesce</code> 即可收口；若仍剩大额，则 TMALL SUPER 另有真实的少出。</p>
+</div>
+
+<h3>2.3 P1：PDD - AHC 与 PDD - AHC DTC 两侧主键对不上，930 万不可核对</h3>
+
+<div class="card">
+  <p>两个店铺在 CPT 侧各有 10 个月的数据，源侧 <b>全部为 0</b>（不是差异，是根本没有对应行）：</p>
+  <table style="margin-top:10px">
+    <thead><tr><th>店铺</th><th class="n">CPT 输出</th><th class="n">源侧</th><th class="n">行数</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>PDD - AHC DTC</td><td class="n">5,848,831</td><td class="n red">0</td><td class="n">10</td><td>202601–202610 各月均有</td></tr>
+      <tr><td>PDD - AHC</td><td class="n">3,455,506</td><td class="n red">0</td><td class="n">10</td><td>同上</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:14px">校验脚本里已留下排查痕迹：<code>PDD - AHC DTC → shop_id 484559035</code>、<code>PDD - AHC → 869101267</code>，
+  且临时表 <code>tmp_trd_total_item_sales_all</code> 明确注释过 <em>"PDD - VSL 切 DTC 后要从 PDD - UL 中拆出来"</em>。
+  <b>判断：源侧（<code>tmp_trd_total_item_sales_all</code>）没有完成 DTC 拆分，两个新店铺名在源侧不存在。</b></p>
+  <p><b>要确认的三件事：</b></p>
+  <ul>
+    <li>源侧这两个 shop 的数据当前被归到哪个 <code>customer</code>（大概率还是 <code>PDD - UL</code> 或 <code>PDD - AHC</code> 的旧值）；</li>
+    <li>拆分时点是否与 CPT 侧一致（CPT 已拆、源未拆 → 源侧要补）；</li>
+    <li>若源侧确实不拆，则这 930 万在核对体系里应显式标注为"源侧口径未覆盖"，而非计作差异。</li>
+  </ul>
+</div>
+
+<h3>2.4 P2：VIP - AHC 在 2026-09 断崖</h3>
+
+<table>
+  <thead><tr><th>月份</th><th class="n">CPT</th><th class="n">源</th><th class="n">差异</th><th class="n">CPT/源</th></tr></thead>
+  <tbody>
+    <tr><td>2026-01 ~ 07</td><td class="n">约 70 万/月</td><td class="n">约 69 万/月</td><td class="n green">+0.8 ~ +1.1 万</td><td class="n">1.01</td></tr>
+    <tr><td>2026-08</td><td class="n">238,815</td><td class="n">234,365</td><td class="n green">+4,450</td><td class="n">1.02</td></tr>
+    <tr><td>2026-09</td><td class="n red">26,327</td><td class="n">477,435</td><td class="n red">-451,108</td><td class="n red">0.06</td></tr>
+    <tr><td>2026-10</td><td class="n grey">无数据</td><td class="n">—</td><td class="n grey">—</td><td class="n grey">—</td></tr>
+  </tbody>
+</table>
+<p class="note">前 8 个月比值稳定在 1.01，说明基础逻辑没问题。2026-09 骤降到 0.06（只出 5.5%），2026-10 直接空。
+这是本次排查中<b>唯一一处"从正常突然归零"的硬故障</b>，优先级应高于 GMV 的存量口径问题——因为它指向调度或数据落表失败，而非口径分歧。</p>
+
+<h3>2.5 P2：VIP - UL 在 2026-07 / 08 之间有口径拐点</h3>
+
+<table>
+  <thead><tr><th>月份</th><th class="n">CPT</th><th class="n">源</th><th class="n">差异率</th><th class="n">CPT/源</th></tr></thead>
+  <tbody>
+    <tr><td>2026-01</td><td class="n">11,905,744</td><td class="n">19,494,552</td><td class="n red">-38.9%</td><td class="n">0.61</td></tr>
+    <tr><td>2026-02</td><td class="n">9,172,864</td><td class="n">14,633,823</td><td class="n red">-37.3%</td><td class="n">0.63</td></tr>
+    <tr><td>2026-03</td><td class="n">10,359,533</td><td class="n">17,040,341</td><td class="n red">-39.2%</td><td class="n">0.61</td></tr>
+    <tr><td>2026-05</td><td class="n">9,519,847</td><td class="n">15,756,823</td><td class="n red">-39.6%</td><td class="n">0.60</td></tr>
+    <tr><td>2026-06</td><td class="n">8,305,716</td><td class="n">14,860,906</td><td class="n red">-44.1%</td><td class="n">0.56</td></tr>
+    <tr><td>2026-07</td><td class="n">5,944,065</td><td class="n">7,407,690</td><td class="n">-19.8%</td><td class="n">0.80</td></tr>
+    <tr><td>2026-08</td><td class="n">3,443,962</td><td class="n">3,415,389</td><td class="n green">+0.8%</td><td class="n green">1.01</td></tr>
+    <tr><td>2026-09</td><td class="n">3,231,755</td><td class="n">3,205,078</td><td class="n green">+0.8%</td><td class="n green">1.01</td></tr>
+    <tr><td>2026-10</td><td class="n">3,497,713</td><td class="n">3,844,558</td><td class="n">-9.0%</td><td class="n">0.91</td></tr>
+  </tbody>
+</table>
+<p class="note">同时注意<b>绝对量</b>也变了：源侧从 1,550 万/月 掉到 340 万/月（-78%）。比值和量级在同一时点同时跳变，
+指向 2026-07/08 有一次<b>口径变更或店铺拆分</b>，而不是单纯的数据误差。需与业务确认：VIP - UL 是否在该时点切换了数据源或拆店。
+若确认是业务侧变更，则 01–06 月的 -2,300 万不应再计入"待修差异"。</p>
+
+<h3>2.6 SKU Mapping 覆盖率：源侧 55% 的 GMV 无映射</h3>
+
+<div class="card">
+  <p>按"既有机制打标、又有 UL SKU Mapping"（both）口径统计 2026 YTD 覆盖率：</p>
+  <table style="margin-top:10px">
+    <thead><tr><th>分组</th><th class="n">both（可算 GSV）</th><th class="n">jz（仅打标）</th><th class="n">ul_sku（仅映射）</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>TMALL FGS 系（11 店）</td><td class="n green">≈ 100%</td><td class="n">≈ 100%</td><td class="n">≈ 100%</td><td>健康</td></tr>
+      <tr><td>JD 系 / VIP - AHC CBE</td><td class="n">88% ~ 97%</td><td class="n">88% ~ 97%</td><td class="n">≈ 100%</td><td>可用</td></tr>
+      <tr><td>TMALL SUPER / TMALL SUPER - UL</td><td class="n red">37% / 43%</td><td class="n">90% / 89%</td><td class="n red">38% / 46%</td><td>打标齐、映射缺</td></tr>
+      <tr><td>VIP - UL / VIP - AHC</td><td class="n red">86% / 42%</td><td class="n">87% / 81%</td><td class="n green">99% / 43%</td><td>VIP - AHC 双缺</td></tr>
+      <tr><td>PDD - UL</td><td class="n red">0%</td><td class="n">82% ~ 89%</td><td class="n red">0%</td><td>无 SKU 映射</td></tr>
+      <tr><td>TMALL FGS - BPC 等</td><td class="n red">0%</td><td class="n green">≈ 100%</td><td class="n red">0%</td><td>走另一套 mapping 表</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px">源侧 45.69 亿 GMV 中，<b>25.16 亿（55.1%）在核对口径下没有 SKU Mapping</b>。
+  其中 TMALL FGS 系和 PDD - UL 的 0% 是<b>正常的</b>——它们走 <code>dim_item_sku_mapping</code> 而非 <code>dim_prd_sku</code>，校验脚本没覆盖这条路径。
+  <b>但 TMALL SUPER / VIP - AHC 的"打标 90%、映射 43%"是真实缺口</b>，这两处需要补组套 BOM 的 SKU 映射。</p>
+</div>
+
+<h2>三、接口二：BMI Spending（<code>ads_bmi_spending_mf</code> → <code>cpt_bmi_spending_yyyymm.csv</code>）</h2>
+
+<h3>3.1 三条核对链路结论</h3>
+
+<table>
+  <thead>
+    <tr><th>链路</th><th>CPT 侧口径</th><th>核对对象</th><th class="n">CPT</th><th class="n">源</th><th class="n">差异</th><th class="n">差异率</th><th>判定</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>RTB</b></td><td>Paid Media-RTB</td><td>黄金公式看板 <code>ads_ec_g_fomular_ndy_traffic_fact</code></td>
+      <td class="n">528,459,084</td><td class="n">523,800,023</td><td class="n">+4,659,060</td><td class="n">+0.89%</td>
+      <td><span class="tag t-p1">可接受，有明确归因</span></td>
+    </tr>
+    <tr>
+      <td><b>PFM</b></td><td>非 CPS 全部类型</td><td><code>dws_pfm_total_item_df</code></td>
+      <td class="n">798,528,147</td><td class="n">798,528,147</td><td class="n grey">0</td><td class="n grey">0.00%</td>
+      <td><span class="tag t-p2">校验失效</span></td>
+    </tr>
+    <tr>
+      <td><b>CPS</b></td><td>Paid Media-CPS</td><td><code>tmp_cps_spending</code></td>
+      <td class="n">37,033,598</td><td class="n">37,033,598</td><td class="n grey">0</td><td class="n grey">0.00%</td>
+      <td><span class="tag t-p2">校验失效</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3.2 RTB 差异 466 万的构成</h3>
+
+<table>
+  <thead><tr><th>归因（脚本自带 reason 字段）</th><th class="n">行数</th><th class="n">差异合计</th><th class="n">占 CPT 比例</th><th>是否可解释</th></tr></thead>
+  <tbody>
+    <tr><td>原因待查</td><td class="n">133</td><td class="n red">2,404,540</td><td class="n red">9.45%</td><td>否</td></tr>
+    <tr><td>黄金公式过滤品牌</td><td class="n">45</td><td class="n">2,254,446</td><td class="n">86.30%</td><td>是（SKIN+DOVE/PONDS、TIGI/HAZELINE）</td></tr>
+    <tr><td>黄金公式小样处理成 GWP/SAMPLE</td><td class="n">94</td><td class="n green">21</td><td class="n">0.00%</td><td>是</td></tr>
+    <tr><td>无差异</td><td class="n">5,812</td><td class="n green">0</td><td class="n">0.00%</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<p><b>"原因待查" 2,405 万里 95% 落在两个店：</b></p>
+
+<table>
+  <thead><tr><th>店铺</th><th>品类 / 品牌 / 品线组</th><th class="n">差异合计</th><th>特征</th></tr></thead>
+  <tbody>
+    <tr><td>JD - UL</td><td class="n" style="text-align:left">ORAL / REGENERATE / 各品线组</td><td class="n">约 110 万</td><td>CPT 每月 7.7–11.6 万，看板<b>恒为 0</b></td></tr>
+    <tr><td>JD - UL</td><td class="n" style="text-align:left">HAIR / CLEAR / CORE</td><td class="n">约 27 万</td><td>CPT 略高于看板 1.2–3.2%</td></tr>
+    <tr><td>JD - UL CBE</td><td class="n" style="text-align:left">SKIN / VASELINE / CORE</td><td class="n">约 13 万</td><td>CPT 有值、看板为 0</td></tr>
+    <tr><td>其他 3 店</td><td class="n" style="text-align:left">—</td><td class="n">约 12 万</td><td>零散</td></tr>
+  </tbody>
+</table>
+
+<div class="card">
+  <h4>结论与动作</h4>
+  <p>主要差异（约 250 万）是<b>黄金公式看板缺失 <code>ORAL / REGENERATE</code> 品类组合</b>造成的一边倒差异——CPT 有、看板无。
+  这是看板侧漏配维度，不是 CPT 算错。<b>建议</b>：向黄金公式看板侧提出补配该品类组合；在补齐前，把这部分纳入 reason 白名单（如 <code>看板缺 REGENERATE ORAL</code>），避免长期挂在"原因待查"里干扰判断。</p>
+</div>
+
+<h3>3.3 PFM / CPS 零差异：这不是好消息</h3>
+
+<div class="card hl">
+  <h4>问题</h4>
+  <p>7,918 行 PFM、3,342 行 CPS，<b>无一例差异</b>，连 1 分钱都没有。5 个 pfm_type 的 CPT 与源完全逐行相等：</p>
+  <table style="margin-top:10px">
+    <thead><tr><th>pfm_type</th><th class="n">CPT</th><th class="n">源</th><th class="n">差异</th></tr></thead>
+    <tbody>
+      <tr><td>Paid Media-RTB</td><td class="n">528,459,084</td><td class="n">528,459,084</td><td class="n grey">0</td></tr>
+      <tr><td>Paid Media-Package</td><td class="n">205,386,226</td><td class="n">205,386,226</td><td class="n grey">0</td></tr>
+      <tr><td>Paid Media-Brand Zone</td><td class="n">42,380,482</td><td class="n">42,380,482</td><td class="n grey">0</td></tr>
+      <tr><td>Paid Media-Content</td><td class="n">13,852,256</td><td class="n">13,852,256</td><td class="n grey">0</td></tr>
+      <tr><td>Paid Media-自播</td><td class="n">8,450,100</td><td class="n">8,450,100</td><td class="n grey">0</td></tr>
+    </tbody>
+  </table>
+  <h4 style="margin-top:16px">为什么说失效</h4>
+  <ul>
+    <li>校验侧用的"源"是 <code>dws_pfm_total_item_df</code>，而 <code>ads_bmi_spending_mf</code> 的 PFM 分支本身就是从这张表加工而来——<b>同源自证，恒等是必然结果</b>。</li>
+    <li>CPS 同理：两侧都读 <code>tmp_cps_spending</code>，而这张 tmp 表是 <code>ads_bmi_spending_mf.sql</code> 自己第 42 行创建的中间表。</li>
+    <li>RTB 之所以能查出 466 万差异，是因为它换了一条独立链路（黄金公式看板）——<b>这才是校验该有的样子</b>。</li>
+  </ul>
+  <p style="margin-bottom:0"><b>建议</b>：PFM / CPS 的校核基准需换成上游原始账单（平台投放后台导出 / <code>ods</code> 层落地文件），否则这两条链路在当前体系下等于没有校验。若短期拿不到原始账单，至少应在报告中标注"PFM / CPS 未做独立校验"，不能作为数据质量通过的依据。</p>
+</div>
+
+<h2>四、排查优先级</h2>
+
+<table>
+  <thead><tr><th class="n">#</th><th>问题</th><th>接口</th><th class="n">涉及金额</th><th>性质</th><th>建议动作</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="n">1</td><td><b>VIP - AHC 2026-09 断崖、10 月空</b></td><td>GMV</td><td class="n">-45 万 / 已中断</td>
+      <td>硬故障（从 1.01 掉到 0.06）</td>
+      <td>查 2026-09 调度日志与 ADS 落表，优先于一切口径问题</td>
+    </tr>
+    <tr>
+      <td class="n">2</td><td><b>品线组 null 两侧口径不一致</b></td><td>GMV</td><td class="n red">-3.97 亿</td>
+      <td>口径分歧（非真缺失）</td>
+      <td>跑上方验证 SQL；确认后统一 <code>coalesce(...,'OTHERS')</code> 或同步去掉兜底</td>
+    </tr>
+    <tr>
+      <td class="n">3</td><td><b>PDD - AHC / DTC 主键对不上</b></td><td>GMV</td><td class="n">930 万</td>
+      <td>源侧未跟上拆分</td>
+      <td>源侧 <code>tmp_trd_total_item_sales_all</code> 补 DTC 拆分逻辑</td>
+    </tr>
+    <tr>
+      <td class="n">4</td><td><b>看板缺 ORAL / REGENERATE</b></td><td>BMI</td><td class="n">250 万</td>
+      <td>看板侧漏配</td>
+      <td>提需求补齐品类组合；补齐前加入 reason 白名单</td>
+    </tr>
+    <tr>
+      <td class="n">5</td><td>VIP - UL 2026-07/08 拐点</td><td>GMV</td><td class="n">-2,300 万</td>
+      <td>待确认（业务变更？）</td>
+      <td>与业务确认是否切换数据源 / 拆店，再决定是否计入差异</td>
+    </tr>
+    <tr>
+      <td class="n">6</td><td>TMALL SUPER / VIP - AHC 组套 SKU 映射缺失</td><td>GMV</td><td class="n">影响 GSV 可算性</td>
+      <td>主数据缺口</td>
+      <td>补组套 BOM → UL SKU 映射，当前 both 覆盖率仅 37% ~ 43%</td>
+    </tr>
+    <tr>
+      <td class="n">7</td><td>PFM / CPS 校验不自独立</td><td>BMI</td><td class="n">7.99 亿 / 0.37 亿</td>
+      <td>校验体系缺陷</td>
+      <td>换成上游原始账单作为基准</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="card" style="margin-top:28px">
+  <h4>还需要你确认的三件事</h4>
+  <ul>
+    <li><b>业务侧反馈的具体症状是什么</b>——是总量对不上、某个店铺对不上，还是某个品线组对不上？这能帮我直接把排查范围收敛到上面某一行。</li>
+    <li><b>能否提供上游平台账单</b>（TMALL SUPER / VIP 的月度投放与销售对账单）。目前所有核对都是"CPT vs 内部加工链路"，没有第三方基准，无法判定谁对谁错。</li>
+    <li><b>VIP - UL 在 2026-07/08 前后是否做过店铺拆分或数据源切换</b>。这决定了 -2,300 万是"待修差异"还是"已解释变更"。</li>
+  </ul>
+</div>
+
+<footer>
+  依据：<code>校验/正式脚本_03_机制GMV Check.ipynb</code>（dt 2026-11-10）、<code>校验/正式脚本_04_BMI Spending Check.ipynb</code>（dt 2026-11-11）中已保存的执行结果，
+  共解析 36 张结果表。核对口径沿用原脚本（GMV 侧 TMALL FGS 店用未退款 GMV、其余用退款后 GMV；BMI 侧统一取 <code>value_taxed</code>）。
+</footer>
+
+</div>
+</body>
+</html>

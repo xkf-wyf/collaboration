@@ -1,0 +1,58 @@
+# Databricks notebook source
+# MAGIC %sql
+# MAGIC
+# MAGIC insert overwrite table ${spark.var.catalog.ads}.fin_cpt.ads_cpt_planning_mf(
+# MAGIC data_type,
+# MAGIC type,
+# MAGIC plan_cycle,
+# MAGIC bu_code,
+# MAGIC bu_name,
+# MAGIC site_code,
+# MAGIC site_name,
+# MAGIC store_code,
+# MAGIC store_name,
+# MAGIC category_code,
+# MAGIC category_name,
+# MAGIC brand_code,
+# MAGIC brand_name,
+# MAGIC product_line_group_code,
+# MAGIC product_line_group_name,
+# MAGIC index_type_level1_code,
+# MAGIC index_type_level1_name,
+# MAGIC index_type_level2_code,
+# MAGIC index_type_level2_name,
+# MAGIC month,
+# MAGIC value,
+# MAGIC create_by,
+# MAGIC dw_create_time,
+# MAGIC dw_last_update_time,
+# MAGIC dw_batch_num
+# MAGIC )
+# MAGIC select 
+# MAGIC data_type,
+# MAGIC type,
+# MAGIC plan_cycle,
+# MAGIC bu_code,
+# MAGIC bu_name,
+# MAGIC site_code,
+# MAGIC site_name,
+# MAGIC store_code,
+# MAGIC store_name,
+# MAGIC category_code,
+# MAGIC category_name,
+# MAGIC brand_code,
+# MAGIC brand_name,
+# MAGIC product_line_group_code,
+# MAGIC product_line_group_name,
+# MAGIC index_type_level1_code,
+# MAGIC index_type_level1_name,
+# MAGIC index_type_level2_code,
+# MAGIC index_type_level2_name,
+# MAGIC month,
+# MAGIC value,
+# MAGIC 'Automatic' as create_by,
+# MAGIC NOW() + INTERVAL 8 HOUR as dw_create_time,
+# MAGIC NOW() + INTERVAL 8 HOUR as dw_last_update_time,
+# MAGIC date_format(current_date(), 'yyyyMMdd') as dw_batch_num
+# MAGIC from ${spark.var.catalog.dws}.fin.dws_cpt_planning_mf
+# MAGIC ;

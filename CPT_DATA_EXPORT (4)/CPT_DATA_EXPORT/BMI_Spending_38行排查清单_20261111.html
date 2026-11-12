@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Spending「原因待查」38 行排查清单</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; padding:0; font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+         background:#f5f6f8; color:#1f2329; font-size:14px; line-height:1.65; }
+  .wrap { max-width:1320px; margin:0 auto; padding:36px 28px 72px; }
+  header { border-bottom:3px solid #1f2329; padding-bottom:16px; margin-bottom:30px; }
+  h1 { font-size:25px; margin:0 0 8px; letter-spacing:-.3px; }
+  .meta { font-size:12.5px; color:#646a73; }
+  .meta span { margin-right:16px; }
+  .meta b { color:#1f2329; font-weight:600; }
+  h2 { font-size:18px; margin:38px 0 14px; padding-left:11px; border-left:4px solid #1f2329; }
+  h3 { font-size:14.5px; margin:24px 0 8px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0 6px; }
+  .kpi { background:#fff; border:1px solid #e3e5e9; border-radius:8px; padding:14px 16px; }
+  .kpi .lab { font-size:11.5px; color:#646a73; margin-bottom:6px; }
+  .kpi .val { font-size:21px; font-weight:700; letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+  .kpi .sub { font-size:11.5px; color:#8a9099; margin-top:3px; }
+  .red{color:#d93026}.org{color:#c8730a}.blu{color:#1f5fa8}.grn{color:#1a7f47}.grey{color:#8a9099}
+  table { width:100%; border-collapse:collapse; background:#fff; margin:12px 0 6px;
+          border:1px solid #e3e5e9; border-radius:8px; overflow:hidden; }
+  th,td { padding:7px 10px; text-align:left; border-bottom:1px solid #eef0f3; font-size:12.5px; }
+  th { background:#fafbfc; font-weight:600; color:#4e5969; font-size:11.5px; white-space:nowrap; position:sticky; top:0; z-index:2;}
+  td.n,th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fbfcfd; }
+  tfoot td { background:#fafbfc; font-weight:700; border-top:2px solid #e3e5e9; }
+  .tag { display:inline-block; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; line-height:17px; white-space:nowrap;}
+  .c1{background:#fde8e6;color:#b3261e}
+  .c2{background:#fff1e0;color:#a35b00}
+  .c3{background:#e8f0fa;color:#1f5fa8}
+  .c4{background:#eef1f6;color:#4e5969}
+  .c5{background:#e6f4ec;color:#1a7f47}
+  .card { background:#fff; border:1px solid #e3e5e9; border-radius:8px; padding:18px 20px; margin:14px 0; }
+  .card.hl { border-left:4px solid #d93026; }
+  .card h4 { margin:0 0 8px; font-size:14.5px; }
+  .card p { margin:7px 0; }
+  .card ul { margin:7px 0; padding-left:20px; } .card li { margin:4px 0; }
+  code { background:#f2f4f7; padding:1px 5px; border-radius:3px; font-family:"SF Mono",Consolas,monospace;
+         font-size:12px; color:#b3261e; }
+  pre { background:#f8f9fb; border:1px solid #e8eaee; border-radius:6px; padding:12px 14px; overflow-x:auto;
+        font-size:12px; line-height:1.55; font-family:"SF Mono",Consolas,monospace; color:#2c3540; }
+  pre code { background:none; color:inherit; padding:0; }
+  .note { font-size:12px; color:#646a73; border-left:3px solid #dcdfe5; padding:2px 0 2px 11px; margin:10px 0; }
+  .bar { height:16px; border-radius:3px; display:block; }
+  .barcell { width:190px; }
+  .legend { font-size:12px; color:#646a73; margin-top:6px; }
+  footer { margin-top:44px; padding-top:16px; border-top:1px solid #e3e5e9; font-size:11.5px; color:#8a9099; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>BMI Spending「原因待查」38 行排查清单</h1>
+  <div class="meta">
+    <span>数据源 <b>04_BMI Spending Check_20261111.xlsx → raw data</b></span>
+    <span>接口 <b>fin_cpt.ads_bmi_spending_mf（index_type = Paid Media-RTB）</b></span>
+    <span>差额合计 <b>562,159 元</b></span>
+    <span>编制 <b>2026-11-11</b></span>
+  </div>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><div class="lab">待查行数</div><div class="val">38</div><div class="sub">占 raw data 6,084 行的 0.63%</div></div>
+  <div class="kpi"><div class="lab">差额合计</div><div class="val red">562,159</div><div class="sub">占 RTB 总量 5.28 亿的 0.107%</div></div>
+  <div class="kpi"><div class="lab">归入 5 类根因</div><div class="val">5</div><div class="sub">全部可从脚本逻辑推导</div></div>
+  <div class="kpi"><div class="lab">需出 fin_cpt 才能查</div><div class="val org">0 行</div><div class="sub">38 行均可在现有权限内定位</div></div>
+</div>
+
+<div class="note">
+  「原因待查」只是说明 <b>reason 判定链的前 3 条规则没覆盖到</b>，不代表无法定位。规则 1 只认 <code>SKIN+DOVE/PONDS</code> 与 <code>TIGI/HAZELINE</code> 四个品牌，规则 2 只管小样换桶，规则 3 只管空品线组 —— 剩下的全部落到兜底分支。
+</div>
+
+<h2>一、根因分布</h2>
+
+<table>
+  <thead><tr><th style="width:52px">代码</th><th>根因</th><th class="n">行数</th><th class="n">差额</th><th>占比</th><th>性质</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="tag c1">C1</span></td>
+      <td><b>store_name 归并不对称</b><br><span style="color:#646a73;font-size:11.5px">CPT 已把 JD - REGENERATE 并入 JD - UL，校验侧 golden 未归并</span></td>
+      <td class="n">7</td><td class="n">337,480</td>
+      <td class="barcell"><span class="bar" style="width:100%;background:#d93026"></span>60.0%</td>
+      <td>校验口径缺陷</td>
+    </tr>
+    <tr>
+      <td><span class="tag c2">C2</span></td>
+      <td><b>五键组合在 golden 源侧不存在</b><br><span style="color:#646a73;font-size:11.5px">t2 该 (month+store+category+brand+plg) 完全没有行</span></td>
+      <td class="n">14</td><td class="n">161,561</td>
+      <td class="barcell"><span class="bar" style="width:47.9%;background:#c8730a"></span>28.7%</td>
+      <td>上游数据缺失</td>
+    </tr>
+    <tr>
+      <td><span class="tag c4">C4</span></td>
+      <td><b>category / brand 打标来源不同</b><br><span style="color:#646a73;font-size:11.5px">t1 取 dim_prd_item（按版本区间）或 pfm_*；t2 取 fact 自带列</span></td>
+      <td class="n">12</td><td class="n">46,535</td>
+      <td class="barcell"><span class="bar" style="width:13.8%;background:#4e5969"></span>8.3%</td>
+      <td>打标口径差</td>
+    </tr>
+    <tr>
+      <td><span class="tag c3">C3</span></td>
+      <td><b>product_line_group 打标不一致</b><br><span style="color:#646a73;font-size:11.5px">同组内金额互挪，合计相等</span></td>
+      <td class="n">4</td><td class="n">16,584</td>
+      <td class="barcell"><span class="bar" style="width:4.9%;background:#1f5fa8"></span>2.9%</td>
+      <td>打标口径差</td>
+    </tr>
+    <tr>
+      <td><span class="tag c5">C5</span></td>
+      <td><b><code>int()</code> 取整截断</b><br><span style="color:#646a73;font-size:11.5px">真实差 0.01 元被放大成 1 元</span></td>
+      <td class="n">1</td><td class="n">−1</td>
+      <td class="barcell"><span class="bar" style="width:0.2%;background:#1a7f47"></span>0.0%</td>
+      <td>校验假阳性</td>
+    </tr>
+  </tbody>
+  <tfoot><tr><td></td><td>合计</td><td class="n">38</td><td class="n">562,159</td><td>100%</td><td></td></tr></tfoot>
+</table>
+
+<h2>二、38 行逐行定位</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th class="n" style="width:34px">#</th><th>month</th><th>store_name</th><th>category</th><th>brand</th>
+      <th>product_line_group</th><th class="n">cpt</th><th class="n">golden</th><th class="n">gap</th>
+      <th class="n">gap%</th><th style="width:40px">根因</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="n">1</td><td>202610</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">4,217,930.10</td><td class="n">4,085,439.62</td><td class="n red">132,491</td><td class="n">3.14%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">2</td><td>202609</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">3,594,955.45</td><td class="n">3,546,333.06</td><td class="n red">48,622</td><td class="n">1.35%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">3</td><td>202605</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">3,064,306.26</td><td class="n">3,018,634.77</td><td class="n red">45,672</td><td class="n">1.49%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">4</td><td>202608</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">2,965,688.13</td><td class="n">2,922,536.90</td><td class="n red">43,152</td><td class="n">1.46%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">5</td><td>202610</td><td>PDD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">35,576.45</td><td class="n">0.00</td><td class="n org">35,576</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">6</td><td>202610</td><td>TMALL FGS - LUX</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">35,100.68</td><td class="n">0.00</td><td class="n org">35,100</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">7</td><td>202607</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">2,249,769.62</td><td class="n">2,218,719.54</td><td class="n red">31,050</td><td class="n">1.38%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">8</td><td>202610</td><td>TMALL FGS - LUX</td><td>DEO</td><td>LUX</td><td>OTHERS</td><td class="n">28,248.31</td><td class="n">0.00</td><td class="n org">28,248</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">9</td><td>202606</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">3,602,460.80</td><td class="n">3,574,672.86</td><td class="n red">27,788</td><td class="n">0.77%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">10</td><td>202610</td><td>JD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">23,263.84</td><td class="n">0.00</td><td class="n org">23,263</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">11</td><td>202610</td><td>JD - UL</td><td>HHC</td><td>CIF</td><td>CIF</td><td class="n">118,492.98</td><td class="n">99,364.55</td><td class="n red">19,128</td><td class="n">16.14%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">12</td><td>202610</td><td>JD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION MIST</td><td class="n">16,916.46</td><td class="n">0.00</td><td class="n org">16,916</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">13</td><td>202603</td><td>JD - UL</td><td>PW</td><td>LUX</td><td>OTHERS</td><td class="n">133,337.12</td><td class="n">117,354.51</td><td class="n red">15,983</td><td class="n">11.99%</td><td><span class="tag c3">C3</span></td></tr>
+    <tr><td class="n">14</td><td>202609</td><td>JD - UL</td><td>HHC</td><td>CIF</td><td>CIF</td><td class="n">39,922.83</td><td class="n">24,823.44</td><td class="n red">15,099</td><td class="n">37.82%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">15</td><td>202610</td><td>PDD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION MIST</td><td class="n">9,762.58</td><td class="n">0.00</td><td class="n org">9,762</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">16</td><td>202604</td><td>JD - UL</td><td>HAIR</td><td>CLEAR</td><td>CORE</td><td class="n">2,025,523.10</td><td class="n">2,016,818.77</td><td class="n red">8,705</td><td class="n">0.43%</td><td><span class="tag c1">C1</span></td></tr>
+    <tr><td class="n">17</td><td>202610</td><td>TMALL SUPER</td><td>DEO</td><td>LUX</td><td>OTHERS</td><td class="n">4,175.12</td><td class="n">0.00</td><td class="n org">4,175</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">18</td><td>202610</td><td>TMALL FGS - BPC</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">3,210.42</td><td class="n">0.00</td><td class="n org">3,210</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">19</td><td>202610</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">366,218.78</td><td class="n">363,646.73</td><td class="n red">2,572</td><td class="n">0.70%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">20</td><td>202609</td><td>PDD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">2,383.59</td><td class="n">0.00</td><td class="n org">2,383</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">21</td><td>202602</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">54,566.78</td><td class="n">53,008.78</td><td class="n red">1,558</td><td class="n">2.86%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">22</td><td>202601</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">77,209.09</td><td class="n">75,679.07</td><td class="n red">1,530</td><td class="n">1.98%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">23</td><td>202603</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">142,334.21</td><td class="n">140,881.79</td><td class="n red">1,453</td><td class="n">1.02%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">24</td><td>202604</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">88,389.24</td><td class="n">87,033.44</td><td class="n red">1,356</td><td class="n">1.53%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">25</td><td>202609</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">171,455.67</td><td class="n">170,375.84</td><td class="n red">1,080</td><td class="n">0.63%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">26</td><td>202601</td><td>PDD - UL</td><td>PW</td><td>DOVE</td><td>OTHERS</td><td class="n">1,000.66</td><td class="n">0.00</td><td class="n org">1,000</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">27</td><td>202605</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">88,544.92</td><td class="n">87,549.77</td><td class="n red">995</td><td class="n">1.12%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">28</td><td>202609</td><td>PDD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION MIST</td><td class="n">988.00</td><td class="n">0.00</td><td class="n org">988</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">29</td><td>202606</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">96,073.51</td><td class="n">95,354.95</td><td class="n red">719</td><td class="n">0.75%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">30</td><td>202607</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">71,822.97</td><td class="n">71,173.49</td><td class="n red">649</td><td class="n">0.90%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">31</td><td>202601</td><td>PDD - UL</td><td>PW</td><td>LUX</td><td>OTHERS</td><td class="n">777.72</td><td class="n">177.19</td><td class="n blu">600</td><td class="n">77.22%</td><td><span class="tag c3">C3</span></td></tr>
+    <tr><td class="n">32</td><td>202609</td><td>JD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION MIST</td><td class="n">452.58</td><td class="n">0.00</td><td class="n org">452</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">33</td><td>202609</td><td>JD - UL</td><td>DEO</td><td>LUX</td><td>DEO LOTION</td><td class="n">441.48</td><td class="n">0.00</td><td class="n org">441</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">34</td><td>202603</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>DERMA</td><td class="n">158,200.56</td><td class="n">157,796.65</td><td class="n blu">404</td><td class="n">0.26%</td><td><span class="tag c3">C3</span></td></tr>
+    <tr><td class="n">35</td><td>202603</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>GWP/SAMPLE</td><td class="n">0.00</td><td class="n">403.91</td><td class="n blu">−403</td><td class="n">100%</td><td><span class="tag c3">C3</span></td></tr>
+    <tr><td class="n">36</td><td>202608</td><td>JD - UL</td><td>SKIN</td><td>VASELINE</td><td>LIP&amp;CUTTIE</td><td class="n">114,424.03</td><td class="n">114,028.94</td><td class="n red">396</td><td class="n">0.35%</td><td><span class="tag c4">C4</span></td></tr>
+    <tr><td class="n">37</td><td>202610</td><td>TMALL FGS - BPC</td><td>DEO</td><td>LUX</td><td>OTHERS</td><td class="n">47.09</td><td class="n">0.00</td><td class="n org">47</td><td class="n">100%</td><td><span class="tag c2">C2</span></td></tr>
+    <tr><td class="n">38</td><td>202610</td><td>PDD - UL</td><td>FEN</td><td>COMFORT</td><td>OTHERS</td><td class="n">127.99</td><td class="n">128.00</td><td class="n grn">−1</td><td class="n">−0.79%</td><td><span class="tag c5">C5</span></td></tr>
+  </tbody>
+  <tfoot><tr><td></td><td colspan="6">合计 38 行</td><td class="n">23,604,099.12</td><td class="n">23,041,936.57</td><td class="n">562,159</td><td></td><td></td></tr></tfoot>
+</table>
+
+<div class="note">
+  第 34 与第 35 行是同一组 <code>202603 / JD - UL / SKIN / VASELINE</code> 的两条腿：DERMA 多 403.91、GWP/SAMPLE 少 403.91，<b>净额为 0</b>。这是判定「打标不一致而非数据缺失」的直接证据。
+</div>
+
+<h2>三、逐类根因的接口证据</h2>
+
+<div class="card hl">
+  <h4><span class="tag c1">C1</span> store_name 归并不对称 &nbsp;·&nbsp; 7 行 / 337,480 元 / 60.0%</h4>
+  <p><b>接口侧</b>（<code>ads_bmi_spending_mf.sql</code> 第 131 行，20260904 起）：</p>
+  <pre><code>case when customer = 'JD - REGENERATE' then 'JD - UL' else customer end as store_name</code></pre>
+  <p><b>校验侧</b>（RTB 对数的 t2 子查询，20260907 改动）：</p>
+  <pre><code>-- ,case when store_group='TMALL SUPER' then 'TMALL SUPER - UL'
+--       --  when store_group='JD - REGENERATE' then 'JD - UL'
+-- else store_group end as store_name --20260421修改
+,store_group  as store_name --20260907          ← 归并被注释</code></pre>
+  <p><b>后果链</b></p>
+  <ul>
+    <li>t1 的 <code>JD - UL</code> = UL <b>+ REGENERATE</b>（接口已归并）</li>
+    <li>t2 的 <code>JD - UL</code> = 仅 UL；REGENERATE 单独成行</li>
+    <li><code>where coalesce(t1.store_name,t2.store_name) in ($store)</code> 的白名单里<b>没有 <code>JD - REGENERATE</code></b> → t2 侧那行被过滤掉</li>
+    <li>⇒ <code>JD - UL</code> 凭空出现「CPT 多算」，金额 = REGENERATE 的 RTB 花费</li>
+  </ul>
+  <p class="note" style="margin-bottom:0">7 行全部是 <code>JD - UL</code>，方向全部为 CPT &gt; golden，gap% 在 0.43%–3.14% 之间浮动 —— 与「REGENERATE 自身体量随月波动」的形态一致。<b>此项为校验口径缺陷，非数据异常。</b></p>
+</div>
+
+<div class="card">
+  <h4><span class="tag c2">C2</span> 五键组合在 golden 源侧不存在 &nbsp;·&nbsp; 14 行 / 161,561 元 / 28.7%</h4>
+  <p>14 行的 <code>golden = 0</code>，意味着 <code>ads_ec_g_fomular_ndy_traffic_fact</code> 里根本没有这个
+  <code>(month, store_group, category, brand, product_group)</code> 组合。拆分如下：</p>
+  <table style="margin-top:8px">
+    <thead><tr><th>子类</th><th class="n">行数</th><th class="n">金额</th><th>分布</th></tr></thead>
+    <tbody>
+      <tr><td>202610 的 DEO / LUX</td><td class="n">9</td><td class="n">156,297</td><td>PDD-UL、TMALL FGS-LUX(2)、JD-UL(2)、TMALL SUPER、TMALL FGS-BPC(2)</td></tr>
+      <tr><td>202609 的 DEO / LUX</td><td class="n">4</td><td class="n">4,265</td><td>PDD-UL(2)、JD-UL(2)</td></tr>
+      <tr><td>202601 的 PW / DOVE / OTHERS</td><td class="n">1</td><td class="n">1,000</td><td>PDD-UL</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px"><b>关键点：202610 的 DEO / LUX 跨 5 个不同渠道的店铺同时归零</b>，单店归店口径解释不了，指向黄金公式侧该品牌在该月整体缺失。</p>
+  <p style="margin-bottom:0"><b>待确认</b>：是「品牌级」（仅 LUX 缺，DOVE / REXONA 正常）还是「品类级」（整个 DEO 缺）。这决定向上游提单的写法。</p>
+</div>
+
+<div class="card">
+  <h4><span class="tag c4">C4</span> category / brand 打标来源不同 &nbsp;·&nbsp; 12 行 / 46,535 元 / 8.3%</h4>
+  <p><b>接口侧</b>：<code>category / brand / bu</code> 有两套来源 ——</p>
+  <ul>
+    <li>分支①（item 命中打标表）：<code>dim_prd_item.category / brand / bu</code>，按
+      <code>period_key between start_time and end_time</code> 落版本区间</li>
+    <li>分支②（店铺维度，<code>item_id in ('0','-')</code> 或 Package 无 item）：<code>pfm_category / pfm_brand / pfm_bu</code></li>
+  </ul>
+  <p><b>校验侧</b>：<code>fact.category / brand / bu</code>（事实表自带列）</p>
+  <p style="margin-bottom:0">两套打标若在某批 item 上不一致，金额就会落在不同的 <code>(category, brand)</code> 组合上。表现为<b>持续性小额比例差</b>：<code>VASELINE/LIP&amp;CUTTIE</code> 10 个月全在（0.35%–2.86%）、<code>HHC/CIF</code> 比例高但品类小（16%–38%）。</p>
+</div>
+
+<div class="card">
+  <h4><span class="tag c3">C3</span> product_line_group 打标不一致 &nbsp;·&nbsp; 4 行 / 16,584 元 / 2.9%</h4>
+  <p><b>接口侧</b>：<code>product_line_group</code> 来自 <code>dim_prd_item.product_line_group</code>（分支①）或 <code>pfm_product_line_group</code>（分支②）<br>
+  <b>校验侧</b>：<code>product_group</code>（事实表自带列）</p>
+  <p><b>第 34 / 35 行的净额为 0</b>，是最干净的证据：</p>
+  <table style="margin-top:8px">
+    <thead><tr><th>plg</th><th class="n">t1 (CPT)</th><th class="n">t2 (golden)</th><th class="n">差</th></tr></thead>
+    <tbody>
+      <tr><td>DERMA</td><td class="n">158,200.56</td><td class="n">157,796.65</td><td class="n">+403.91</td></tr>
+      <tr><td>GWP/SAMPLE</td><td class="n">0.00</td><td class="n">403.91</td><td class="n">−403.91</td></tr>
+      <tr><td><b>合计</b></td><td class="n"><b>158,200.56</b></td><td class="n"><b>158,200.56</b></td><td class="n"><b>0</b></td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-bottom:0">同一笔 403.91 元，CPT 归 <code>DERMA</code>、golden 归 <code>GWP/SAMPLE</code>。<b>金额没丢，是打标值不同。</b></p>
+</div>
+
+<div class="card">
+  <h4><span class="tag c5">C5</span> <code>int()</code> 取整截断 &nbsp;·&nbsp; 1 行 / −1 元</h4>
+  <pre><code>int(rtb_spending_cpt) - int(rtb_spending_golden) as gap_absolute</code></pre>
+  <p style="margin-bottom:0">第 38 行：<code>int(127.99) − int(128.00) = 127 − 128 = −1</code>，真实差额仅 <b>0.01 元</b>。
+  同一机制还会把「cpt 略大于 golden」的 0.01 元尾差放大成 <b>+1</b>，从而误触发 <code>gap_absolute != 0</code> 进入待查。<b>非数据问题。</b></p>
+</div>
+
+<h2>四、验证 SQL（全部使用校验脚本自己的源表）</h2>
+
+<h3>V1　验证 C1：REGENERATE 是否造成了 JD - UL 的 337,480</h3>
+<pre><code>select replace(period,'-','')                as month
+     , store_group
+     , case when store_group = 'JD - REGENERATE' then 'JD - UL'
+            else store_group end             as store_name_merged
+     , round(sum(value), 2)                  as golden_value
+from ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_ndy_traffic_fact t1
+left join ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_dim_traffic_metric_cfg t2
+       on t1.metric_id = t2.metric_id
+where period_type = 'Month'
+  and period between '2026-01' and '2026-10'
+  and t2.column_name = 'rtb_spending'
+  and store_group like 'JD%'
+  and category = 'HAIR'
+  and brand    = 'CLEAR'
+  and product_group = 'CORE'
+group by replace(period,'-',''), store_group
+order by month, store_group;</code></pre>
+<p style="font-size:13px"><b>判定</b>：若出现 <code>JD - REGENERATE</code> 行，且各月金额与 C1 的 gap 对得上 → <b>C1 定案</b>（数据本身没问题，是校验归并口径漏改）。</p>
+
+<h3>V2　验证 C2：202610 的 DEO / LUX 在 fact 表里是什么情况</h3>
+<pre><code>select replace(period,'-','')  as month
+     , brand
+     , store_group
+     , round(sum(value), 2)   as golden_value
+     , count(*)               as row_cnt
+from ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_ndy_traffic_fact t1
+left join ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_dim_traffic_metric_cfg t2
+       on t1.metric_id = t2.metric_id
+where period_type = 'Month'
+  and period between '2026-09' and '2026-10'
+  and t2.column_name = 'rtb_spending'
+  and category = 'DEO'
+group by replace(period,'-',''), brand, store_group
+order by month, brand, store_group;</code></pre>
+<table style="margin-top:8px">
+  <thead><tr><th>结果</th><th>定位结论</th><th>提单方向</th></tr></thead>
+  <tbody>
+    <tr><td>202610 无 <code>LUX</code> 行，DOVE / REXONA 正常</td><td><b>品牌级缺失</b></td><td>黄金公式侧品牌维度映射</td></tr>
+    <tr><td>202610 整个 <code>DEO</code> 无行</td><td><b>品类级 / 整月未回传</b></td><td>黄金公式 10 月数据回传</td></tr>
+    <tr><td>202610 有 LUX 但 <code>store_group</code> 落到别的店</td><td><b>归店不一致</b></td><td>转 V3</td></tr>
+    <tr><td>202610 有 LUX 且金额与 CPT 一致</td><td>前置判断有误</td><td>重看 join 条件</td></tr>
+  </tbody>
+</table>
+
+<h3>V3　验证 C3 / C4：组合在另一侧是否被挪到别的维度</h3>
+<pre><code>-- 以 JD - UL / HAIR / CLEAR 为例，看 t2 侧全部 plg 分布
+-- 与 CPT 侧的 product_line_group 分布并排比对
+select replace(period,'-','')  as month
+     , product_group
+     , round(sum(value), 2)   as golden_value
+from ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_ndy_traffic_fact t1
+left join ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_dim_traffic_metric_cfg t2
+       on t1.metric_id = t2.metric_id
+where period_type = 'Month'
+  and period between '2026-01' and '2026-10'
+  and t2.column_name = 'rtb_spending'
+  and store_group = 'JD - UL'
+  and category = 'HAIR'
+  and brand    = 'CLEAR'
+group by replace(period,'-',''), product_group
+order by month, golden_value desc;</code></pre>
+<p style="font-size:13px"><b>判定</b>：若差额能在另一个 <code>product_group</code> 下找到等额对冲 → C3（打标值不同）；若找不到 → C4（打标组合本身不同）。</p>
+
+<h3>V4　量化 C5：清理所有 <code>int()</code> 假阳性</h3>
+<pre><code>select *
+from (
+    select coalesce(t1.month, t2.month)                 as month
+         , coalesce(t1.store_name, t2.store_name)       as store_name
+         , coalesce(t1.category, t2.category)           as category
+         , coalesce(t1.brand, t2.brand)                 as brand
+         , coalesce(t1.product_line_group, t2.product_line_group) as plg
+         , round(coalesce(rtb_spending_1,0) - coalesce(rtb_spending_2,0), 2) as real_gap
+    from (
+        select month, store_name, category_name as category, brand_name as brand
+             , product_line_group, round(sum(value_taxed),2) as rtb_spending_1
+        from ${spark.var.catalog.ads}.fin_cpt.ads_bmi_spending_mf
+        where dt = '$dt' and index_type = 'Paid Media-RTB'
+        group by month, store_name, category_name, brand_name, product_line_group
+    ) t1
+    full join (
+        select replace(period,'-','') as month, store_group as store_name
+             , category, brand, product_group as product_line_group
+             , sum(value) as rtb_spending_2
+        from ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_ndy_traffic_fact a
+        left join ${spark.var.catalog.ads}.ddm_dset.ads_ec_g_fomular_dim_traffic_metric_cfg b
+               on a.metric_id = b.metric_id
+        where period_type = 'Month' and period between '$start_mth' and '$end_mth'
+          and b.column_name = 'rtb_spending'
+        group by replace(period,'-',''), store_group, category, brand, product_group
+    ) t2
+      on t1.month = t2.month and t1.store_name = t2.store_name
+     and t1.category = t2.category and t1.brand = t2.brand
+     and coalesce(t1.product_line_group,'&lt;NULL&gt;') = coalesce(t2.product_line_group,'&lt;NULL&gt;')
+) t
+where real_gap &lt;&gt; 0 and abs(real_gap) &lt; 1
+order by abs(real_gap) desc;</code></pre>
+<p style="font-size:13px"><b>用途</b>：估算「待查」里有多少是 1 元以下的噪音。若结果集基本覆盖待查清单，说明剩余差异整体已低于 1 元量级。</p>
+
+<h2>五、执行顺序与预期</h2>
+<table>
+  <thead><tr><th class="n" style="width:40px">步</th><th>SQL</th><th>目标</th><th class="n">可定性金额</th><th>预期结论</th></tr></thead>
+  <tbody>
+    <tr><td class="n">1</td><td>V1</td><td>C1 归并不对称</td><td class="n">337,480（60%）</td><td>确认 REGENERATE 行存在且金额吻合 → 校验口径问题</td></tr>
+    <tr><td class="n">2</td><td>V2</td><td>C2 源侧缺失</td><td class="n">161,561（29%）</td><td>判定品牌级 or 品类级 → 确定提单对象</td></tr>
+    <tr><td class="n">3</td><td>V3</td><td>C3 / C4 打标差异</td><td class="n">63,119（11%）</td><td>看是否有等额对冲，区分打标值不同 vs 组合不同</td></tr>
+    <tr><td class="n">4</td><td>V4</td><td>C5 假阳性</td><td class="n">−1（0%）</td><td>直接关闭</td></tr>
+  </tbody>
+</table>
+
+<div class="note" style="margin-top:14px">
+  <b>V1 + V2 两条即可定性 89% 的金额</b>，且都在校验脚本已有的源表上执行，不需要新的权限。
+  C3 / C4 合计仅 11%，且属持续性小额口径差，建议纳入 reason 白名单而非逐行追。
+</div>
+
+<footer>
+  依据：<code>04_BMI Spending Check_20261111.xlsx</code> → raw data（6,084 行）中 reason = 原因待查 的 38 行；
+  接口脚本 <code>BMI_SPENDING/script/ads_bmi_spending_mf.sql</code>；校验脚本 RTB 对数段（t1 = fin_cpt.ads_bmi_spending_mf，t2 = ddm_dset 黄金公式流量事实表）。
+  金额单位：元。gap% 为比率（0.0314 即 3.14%）。
+</footer>
+
+</div>
+</body>
+</html>

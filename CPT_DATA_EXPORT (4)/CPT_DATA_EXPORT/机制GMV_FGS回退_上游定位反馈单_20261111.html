@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>机制GMV出站回退 · 上游定位反馈单（2026-11-11）</title>
+<style>
+  body{font-family:"Microsoft YaHei",sans-serif;color:#1a1a1a;max-width:960px;margin:0 auto;padding:24px;line-height:1.65;background:#fff;}
+  h1{font-size:20px;border-bottom:3px solid #c0392b;padding-bottom:8px;}
+  h2{font-size:16px;margin-top:28px;border-left:4px solid #2c5f8a;padding-left:10px;}
+  h3{font-size:14px;margin-top:18px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:10px 0;}
+  th,td{border:1px solid #ccc;padding:5px 9px;text-align:left;}
+  th{background:#eef3f8;}
+  .num{text-align:right;font-variant-numeric:tabular-nums;}
+  code,pre{font-family:Consolas,monospace;font-size:12.5px;background:#f5f6f8;border-radius:4px;}
+  code{padding:1px 5px;}
+  pre{padding:10px 14px;overflow-x:auto;border:1px solid #e0e0e0;}
+  .tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;margin-right:6px;}
+  .red{background:#fdecea;color:#c0392b;}
+  .green{background:#e8f6ee;color:#1e7e46;}
+  .yellow{background:#fff7e0;color:#9a6b00;}
+  .note{background:#f8f9fa;border-left:4px solid #999;padding:8px 12px;font-size:13px;margin:10px 0;}
+  .hl{background:#fff3cd;padding:0 3px;}
+</style>
+</head>
+<body>
+
+<h1>机制GMV出站接口回退事故 · 上游定位反馈单</h1>
+<p><b>日期：</b>2026-11-11　<b>接口：</b><code>fin_cpt.ads_secondary_gsv_gmv_mf</code>（机制GMV，出站文件 cpt_secondary_gsv_gmv_yyyymm.csv）　<b>状态：</b>已定位至上游维表，待上游确认具体环节</p>
+
+<h2>一、事故概述</h2>
+<p><span class="tag red">P0</span>2026-11-10/11 跑批后，出站表<b>最新 dt 分区</b>中，除 TMALL FGS - AHC / AHC CBE 外的<b>全部 TMALL FGS 店铺整体消失</b>（BPC / CLEAR / NEXXUS / PONDS / VSL / LUX / HC / REGENERATE / ZHONGHUA）。上一分区（dt=2026-11-09）数据完整。</p>
+<p>直接技术原因已确认：本次跑批重建的中间表 <code>tmp_trd_total_item_sales_all</code> 中，这些店铺<b>全部明细行的 <code>sku_code</code>（du code）为 null</b>，被出站过滤条件 <code>where a.flag = 1 and nvl(sku_code,'') &lt;&gt; ''</code>（接口脚本第 853 行）整店剔除。</p>
+
+<h2>二、影响面</h2>
+<table>
+<tr><th>店铺</th><th>dt=2026-11-09 分区金额（YTD）</th><th>最新分区</th></tr>
+<tr><td>TMALL FGS - BPC</td><td class="num">346,334,589.41</td><td class="num">0（整店消失）</td></tr>
+<tr><td>TMALL FGS - VSL</td><td class="num">271,428,549.84</td><td class="num">0（整店消失）</td></tr>
+<tr><td>TMALL FGS - CLEAR</td><td class="num">158,511,773.16</td><td class="num">0（整店消失）</td></tr>
+<tr><td>TMALL FGS - PONDS</td><td class="num">44,740,595.00</td><td class="num">0（整店消失）</td></tr>
+<tr><td><b>已确认合计</b></td><td class="num"><b>≈ 8.21 亿</b></td><td class="num"><b>0</b></td></tr>
+</table>
+<p class="note">NEXXUS / LUX / HC / REGENERATE / ZHONGHUA 未统计，实际缺口更大。出站 CSV 文件同批丢失上述店铺。</p>
+
+<h2>三、时间窗与责任边界</h2>
+<table>
+<tr><th>证据</th><th>结论</th></tr>
+<tr><td>dt=2026-11-09 分区：FGS 全店在表，BPC 3.46 亿（YTD）</td><td>11-09 跑批前链路正常</td></tr>
+<tr><td>dt=最新分区：仅剩 AHC / AHC CBE</td><td>回退发生在 <span class="hl">11-09 跑批与最新跑批之间</span></td></tr>
+<tr><td>接口脚本变更日志最后一条：<code>dst 20261016 PDD - VSL 补上site、channel</code></td><td><span class="tag green">接口侧</span>故障窗口内<b>无代码变更</b>，排除接口改动</td></tr>
+<tr><td>tmp 中机制打标 flag 覆盖率 99.97%（dim_sku_pack_size 按 item+sku+shop_id 命中）</td><td><code>item_id / sku_id / shop_id</code> 身份键<b>无异常</b></td></tr>
+<tr><td>tmp 中 bu / category / brand 有值（dim_prd_sku 按 item+sku 命中）</td><td>进一步排除 item/sku 粒度问题</td></tr>
+</table>
+
+<h2>四、根因定位树</h2>
+<p>sku_code 在通用分支只有一个表达式（接口脚本 <code>tmp_trd_total_item_sales</code> / <code>tmp_trd_total_item_sales_bundle</code>）：</p>
+<pre>sku_code = coalesce( b.ul_sku_code        -- dim_sku_matching / dim_bundle_matching
+                   , c.tc_goods_sku       -- dim_item_sku_mapping (is_tc='是')
+                   , a.ul_sku_code )      -- 兜底 = nvl(dim_sku_matching.ul_sku_code, dim_item_sku_mapping.goods_sn)</pre>
+<p>三个来源<b>同时为空</b>。已证明 item/sku/shop_id 无异常（见上表），因此故障只剩以下嫌疑，按概率排序：</p>
+<table>
+<tr><th>#</th><th>嫌疑环节</th><th>归属</th><th>判定依据</th></tr>
+<tr><td>1</td><td><code>dim.cd.dim_sku_matching</code>（source_type='PLATFORM_B2C'）刷新丢数，或 <code>source_customer</code> 命名变更导致 <code>upper(shop_name)=upper(substring(source_customer,首个'-'+2))</code> 匹配失效</td><td>上游维表</td><td>is_tc='否' 主路径唯一来源，且与其余两条同断，指向公共依赖</td></tr>
+<tr><td>2</td><td><code>dim.cd.dim_bundle_matching</code> 同上（组套路径）</td><td>上游维表</td><td>同样依赖 shop_name 截取匹配</td></tr>
+<tr><td>3</td><td><code>dim.cd.dim_item_sku_mapping</code> 刷新丢失 FGS 条目</td><td>上游维表</td><td>is_tc='是'/'否' 两个子集同时为空才成立</td></tr>
+<tr><td>4</td><td>dws 源表 <code>dws_trd_total_sku_sales_df</code> 的 <code>shop_name</code> / <code>source_type</code> 字段值变更</td><td>上游源表</td><td>两条维表 join 的公共键</td></tr>
+</table>
+<p><b>AHC 独活的原因</b>：AHC / AHC CBE 走专属分支（<code>tmp_trd_total_item_sales_tm_data</code>，第 223 行硬编码 <code>b.customer in ('TMALL FGS - AHC','TMALL FGS - AHC CBE')</code>），其 <code>sku_code</code> 取自 <code>dim_cpt_bundle_mapping.du_code</code>，<b>仅按 item_id+sku_id 关联，不依赖 shop_name</b>——这从反面印证故障点在通用分支的 shop_name 型匹配链路上。</p>
+
+<h2>五、请上游执行的定位 SQL（按顺序，前两段即可定性）</h2>
+
+<h3>S1 · 爆炸半径：除 FGS 外还有哪些店受影响（区分局部/全局故障）</h3>
+<pre>select store_name
+     , sum(case when dt='2026-11-09' then 1 else 0 end)                               as rows_1109
+     , sum(case when dt='$最新dt'   then 1 else 0 end)                                as rows_new
+     , round(sum(case when dt='2026-11-09' then secondary_gmv_amount else 0 end),2)   as amt_1109
+     , round(sum(case when dt='$最新dt'   then secondary_gmv_amount else 0 end),2)    as amt_new
+from ${spark.var.catalog.ads}.fin_cpt.ads_secondary_gsv_gmv_mf
+where dt in ('2026-11-09','$最新dt')
+group by 1
+order by amt_1109 desc;</pre>
+<p>仅 FGS 组掉 → 维表局部丢数；掉一片店 → dws 源表字段级变更（事故升级）。</p>
+
+<h3>S2 · dim_sku_matching：FGS 的匹配记录还在吗</h3>
+<pre>select source_customer, source_type
+     , count(*)                        as cnt
+     , count(distinct source_sku_code) as items
+from ${spark.var.catalog.dim}.cd.dim_sku_matching
+where upper(source_customer) like '%VSL%'
+   or upper(source_customer) like '%BPC%'
+   or upper(source_customer) like '%CLEAR%'
+group by 1,2;</pre>
+<p>0 行 = 实锤丢数；有行但格式变化（空格/前缀/大小写规则）= 匹配表达式失效。</p>
+
+<h3>S3 · dim_item_sku_mapping：FGS 条目分 is_tc 核对</h3>
+<pre>select c.is_tc, c.source_type
+     , count(*)                                                as cnt
+     , count(distinct concat_ws('_',c.outer_goods_id,c.outer_goods_sku_id)) as items
+from (select distinct item_id, sku_id, source_type
+      from ${spark.var.catalog.tmp}.fin.tmp_trd_total_item_sales_all
+      where customer in ('TMALL FGS - VSL','TMALL FGS - BPC','TMALL FGS - CLEAR','TMALL FGS - PONDS')
+        and abs(gmv) &gt; 0) a
+left join ${spark.var.catalog.dim}.cd.dim_item_sku_mapping c
+       on a.item_id = c.outer_goods_id and a.sku_id = c.outer_goods_sku_id
+      and a.source_type = c.source_type
+group by 1,2;</pre>
+
+<h3>S4 · dws 源表字段现值（与维表 source_customer 格式对照）</h3>
+<pre>select customer, shop_id, shop_name, source_type, platform, count(*) as cnt
+from ${spark.var.catalog.tmp}.fin.tmp_trd_total_item_sales_all
+where customer in ('TMALL FGS - VSL','TMALL FGS - BPC')
+  and left(period_key,7) = '2026-10'
+group by 1,2,3,4,5;</pre>
+<p>若 <code>shop_name</code> 为 null 或不再是品牌短码（如 <code>VSL</code>），而 <code>dim_sku_matching.source_customer</code> 仍为 <code>TMALL FGS - VSL</code> 格式，则匹配断裂点即在此。</p>
+
+<h2>六、恢复建议</h2>
+<ol>
+<li><b>上游</b>：确认丢数环节后恢复维表数据（重刷 / 回滚），不要在出站表上手工补分区；</li>
+<li><b>接口侧</b>：维表恢复后带 <code>start_mth='2026-01'</code> 重跑，最新 dt 分区自动重建为完整 YTD；</li>
+<li><b>校验补丁（防再发，强烈建议）</b>：现校验脚本 03 的 t1 读的是 <code>ads_second_total_sales_mf</code>（二级总销售），其与中间表恒等，<b>对本次回退完全无发现能力</b>。建议增加一个校验 cell：用 <code>tmp_trd_total_item_sales_all</code> 中 <code>flag=1 and sku_code&lt;&gt;''</code> 的金额与 <code>ads_secondary_gsv_gmv_mf</code> 当日分区逐店比对，差异 &gt;1 元即报警。该等式可精确重建出站表，跑出 0 差异即证明链路完好。</li>
+</ol>
+
+<h2>七、附：中间表现状（VSL 实测，2026-01~10）</h2>
+<table>
+<tr><th>month</th><th>listings</th><th>total_gmv</th><th>sku_code 非空 GMV</th><th>du_code 覆盖率</th><th>机制 flag 覆盖率</th></tr>
+<tr><td>2026-01</td><td class="num">504</td><td class="num">33,404,688.89</td><td class="num">0</td><td class="num">0%</td><td class="num">99.998%</td></tr>
+<tr><td>2026-05</td><td class="num">595</td><td class="num">25,523,510.28</td><td class="num">0</td><td class="num">0%</td><td class="num">99.94%</td></tr>
+<tr><td>2026-10</td><td class="num">812</td><td class="num">93,280,422.34</td><td class="num">0</td><td class="num">0%</td><td class="num">99.95%</td></tr>
+<tr><td>1-10 合计</td><td class="num">—</td><td class="num">≈2.73 亿</td><td class="num">0</td><td class="num">0%</td><td class="num">99.97%</td></tr>
+</table>
+<p class="note">说明：机制打标（dim_sku_pack_size）正常而 du code（dim_sku_matching 系）全空，两者是独立维表链路——这是"数据在、映射断"的直接证据。另：43 个机制未打标链接经查为非机制品（机制表整体无此 item+sku），占 GMV 0.026%，属正常业务口径，不在本次事故范围内。</p>
+
+</body>
+</html>
